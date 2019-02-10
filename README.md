@@ -25,6 +25,7 @@ In Command Prompt, from monsters directory:
 
 ## Go code
 Open up the project in Atom and get to work.
+ * pipenv run atom
 
 
 ## References
@@ -36,6 +37,7 @@ Open up the project in Atom and get to work.
 
 #### Arcade
  * http://arcade.academy/index.html
+ * http://arcade.academy/quick_index.html
  * https://opensource.com/article/18/4/easy-2d-game-creation-python-and-arcade
 
 #### GitHub
