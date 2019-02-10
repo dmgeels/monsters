@@ -9,8 +9,8 @@ Let's make a video game.
 #### Install an Editor
  * https://atom.io/
  * Add packages:
-    * autopep8
-    * linter-flake8
+    * ide-python
+    * autocomplete-python
     * script
 
 #### Install git
