@@ -8,6 +8,7 @@ Let's make a video game.
 
 #### Install an Editor
  * https://atom.io/
+ * pip install jedi flake8 autopep8 python-language-server[all]
  * Add packages:
     * ide-python
     * autocomplete-python
@@ -25,7 +26,6 @@ In Command Prompt, from monsters directory:
 
 ## Go code
 Open up the project in Atom and get to work.
- * pipenv run atom
 
 
 ## References
