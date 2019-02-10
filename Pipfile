@@ -8,9 +8,9 @@ verify_ssl = true
 [packages]
 arcade = "*"
 flake8 = "*"
-flake8-docstrings = "*"
-hacking = "*"
 autopep8 = "*"
+jedi = "*"
+python-language-server = "*"
 
 [requires]
 python_version = "3.7"
