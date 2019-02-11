@@ -9,7 +9,7 @@ class MonsterGame(arcade.Window):
     """ Main application class. """
 
     def __init__(self, width, height):
-        super().__init__(width, height)
+        super().__init__(width, height, title='monsters')
 
         arcade.set_background_color(arcade.color.AMAZON)
 
@@ -24,12 +24,11 @@ class MonsterGame(arcade.Window):
     def on_draw(self):
         """ Render the screen. """
         arcade.start_render()
-        sprite = arcade.Sprite('img/character.png')
-        sprite.center_x = 200
-        sprite.center_y = 300
+        sprite = arcade.Sprite('img/character.png', scale=0.2, center_x=200, center_y=300)
         sprites = arcade.SpriteList()
         sprites.append(sprite)
         sprites.draw()
+
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
