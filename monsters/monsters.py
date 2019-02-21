@@ -29,7 +29,7 @@ class MonsterGame(arcade.Window):
     def on_draw(self):
         """ Render the screen. """
         arcade.start_render()
-        arcade.draw_text('MONSTERS', 140, 200, arcade.color.BLACK, 18)
+        arcade.draw_text('Dowsha', 140, 200, arcade.color.BLACK, 18)
         self.sprites.draw()
 
     def update(self, delta_time):
