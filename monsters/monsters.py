@@ -76,13 +76,11 @@ class MonsterGame(arcade.Window):
     def on_draw(self):
         """ Render the screen. """
         arcade.start_render()
-        arcade.draw_text('Dowsha', 300, 500, arcade.color.BLACK, 18)
+        arcade.draw_text('Dowsha', 300, 500, arcade.color.BLACK, 24)
         if self.show_points:
             for x, y in self.sprite.get_points():
                 arcade.draw_point( x, y, arcade.color.BLACK, 2 )
         self.sprites.draw()
-
-        arcade.button()
 
 
     def update(self, delta_time):
