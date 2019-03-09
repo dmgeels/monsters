@@ -24,13 +24,6 @@ class Ogre(Monster):
     def __init__(self, x, y):
         super().__init__('img/Ogre.png', 3, x, y)
 
-class Duck(Monster):
-    """Sprite class for Duck"""
-
-    def __init__(self, x, y):
-        super().__init__('img/Duck.png', 2, x=x, y=y)
-
-
 class MonsterGame(arcade.Window):
     """ Main application class. """
 
@@ -49,23 +42,6 @@ class MonsterGame(arcade.Window):
 
 
         self.sprites.append(Hero(300, 350))
-        for j in range(4):
-            for o in range(12):
-                x = 100 + 50 * o
-                y = 300 - 50 * j
-
-                if random.randint(1, 5) == 5:
-                    fred=Duck(x, y)
-                else:
-                    fred=Ogre(x, y)
-                """Make Ogre or duck in the cords"""
-                self.sprites.append(fred)
-        # self.sprite = arcade.Sprite('img/character.png', scale=0.5, center_x=200, center_y=300)
-        # self.sprite.angle = 0
-        # self.sprite.alpha = 1.0
-        # self.sprites = arcade.SpriteList(use_spatial_hash=False)
-        # self.sprites.append(self.sprite)
-
 
 
 
