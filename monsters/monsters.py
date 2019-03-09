@@ -38,11 +38,8 @@ class MonsterGame(arcade.Window):
         """ One-time setup """
 
         self.sprites = arcade.SpriteList()
-
-
-
-        self.sprites.append(Hero(300, 350))
-
+        self.hero = Hero(300, 350)
+        self.sprites.append(self.hero)
 
 
     def quit(self):
@@ -52,10 +49,7 @@ class MonsterGame(arcade.Window):
     def on_draw(self):
         """ Render the screen. """
         arcade.start_render()
-        arcade.draw_text('Dowsha', 300, 500, arcade.color.BLACK, 24)
-        if self.show_points:
-            for x, y in self.sprite.get_points():
-                arcade.draw_point( x, y, arcade.color.BLACK, 2 )
+        arcade.draw_text('Monsters', 300, 500, arcade.color.BLACK, 24)
         self.sprites.draw()
 
 
@@ -68,17 +62,12 @@ class MonsterGame(arcade.Window):
         """ Handles keyboard. Quits on 'q'. """
         if key == arcade.key.Q:
             self.quit()
-        # elif key == arcade.key.SPACE:
-        #     self.angle_delta *= -1
-        # elif key == arcade.key.G:
-        #     self.sprite.alpha = 1.2 - self.sprite.alpha
-        #     print('Ghost!', self.sprite.alpha)
-        # elif key == arcade.key.S:
-        #     self.show_points = not self.show_points
-        arcade.set_background_color(arcade.color.BLUE_GRAY)
+        elif key == arcade.key.G:
+            self.hero.alpha = 1.2 - self.hero.alpha
+            print('Ghost!', self.hero.alpha)
 
     def on_key_release(self, key, modifiers):
-        arcade.set_background_color(arcade.color.AMAZON)
+        pass
 
 
 def main():
