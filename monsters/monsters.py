@@ -1,34 +1,32 @@
 import os
 import arcade
 import random
-
 from enum import Enum
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-
 CELL_SIZE = 32
+WINDOW_COLS = 30
+WINDOW_ROWS = 20
+SCREEN_WIDTH = CELL_SIZE * WINDOW_COLS
+SCREEN_HEIGHT = CELL_SIZE * WINDOW_ROWS
 
 
 class Hero(arcade.Sprite):
     """Sprite class for hero"""
 
     def __init__(self, board):
-        coordinates = board.getCoordinates(0, 0)
-        super().__init__('img/character.png', scale=0.5,
-            center_x=coordinates['x'], center_y=coordinates['y'])
+        super().__init__('img/character.png', scale=0.4)
+        self.board = board
         self.col = 0
         self.row = 0
-        self.board = board
+        self.center_x, self.center_y = self.board.getCoordinates(self.col, self.row)
+
 
     def Move(self, direction):
         if direction == Direction.UP:
             if self.board.getCellType(self.col, self.row + 1) == CellType.EMPTY:
                 self.row += 1
 
-        coordinates = self.board.getCoordinates(self.col, self.row)
-        self.center_x = coordinates['x']
-        self.center_y = coordinates['y']
+        self.center_x, self.center_y = self.board.getCoordinates(self.col, self.row)
         # TODO: finish
 
 class Monster(arcade.Sprite):
@@ -46,19 +44,19 @@ class Ogre(Monster):
 class GameBoard():
     """Stores board state as a 2-d grid."""
 
-    def __init__(self, num_cols, num_rows):
-        self.num_cols = num_cols
-        self.num_rows = num_rows
+    def __init__(self):
+        self.num_cols = WINDOW_COLS
+        self.num_rows = WINDOW_ROWS
         self.rows = []
-        for r in range(num_rows):
-            self.rows.append( [CellType.EMPTY] * num_cols )
+        for r in range(self.num_rows):
+            self.rows.append( [CellType.EMPTY] * self.num_cols )
 
     def getCellType(self, col, row):
         return self.rows[row][col]
 
     def getCoordinates(self, col, row):
         """Returns the center of the cell at col x row."""
-        return { 'x': (col + 0.5) * CELL_SIZE, 'y': (row + 0.5) * CELL_SIZE }
+        return ((col + 0.5) * CELL_SIZE, (row + 0.5) * CELL_SIZE)
 
 class CellType(Enum):
     EMPTY = 1
@@ -82,7 +80,7 @@ class MonsterGame(arcade.Window):
 
     def setup(self):
         """ One-time setup """
-        self.board = GameBoard(24, 12)
+        self.board = GameBoard()
         print( self.board.getCellType(2,2))
 
         self.sprites = arcade.SpriteList()
