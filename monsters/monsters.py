@@ -9,6 +9,28 @@ WINDOW_ROWS = 20
 SCREEN_WIDTH = CELL_SIZE * WINDOW_COLS
 SCREEN_HEIGHT = CELL_SIZE * WINDOW_ROWS
 
+TestBoard = [
+[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
+[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
+[2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2 ],
+[2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2 ],
+[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2 ],
+[2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
+[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2 ],
+[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2 ],
+[2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 2 ],
+[2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
+[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2 ],
+[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2 ],
+[2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
+[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
+[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
+[2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
+[2, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
+[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2 ],
+[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
+[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ]]
+
 
 class Hero(arcade.Sprite):
     """Sprite class for hero"""
@@ -16,17 +38,17 @@ class Hero(arcade.Sprite):
     def __init__(self, board):
         super().__init__('img/character.png', scale=0.4)
         self.board = board
-        self.col = 0
-        self.row = 0
-        self.center_x, self.center_y = self.board.getCoordinates(self.col, self.row)
+        self.col = 1
+        self.row = 1
+        self.center_x, self.center_y = self.board.getCoordinates(self.row, self.col)
 
 
     def Move(self, direction):
         if direction == Direction.UP:
-            if self.board.getCellType(self.col, self.row + 1) == CellType.EMPTY:
+            if self.board.getCellType(self.row, self.col + 1) == CellType.EMPTY:
                 self.row += 1
 
-        self.center_x, self.center_y = self.board.getCoordinates(self.col, self.row)
+        self.center_x, self.center_y = self.board.getCoordinates(self.row, self.col)
         # TODO: finish
 
 class Monster(arcade.Sprite):
@@ -48,15 +70,26 @@ class GameBoard():
         self.num_cols = WINDOW_COLS
         self.num_rows = WINDOW_ROWS
         self.rows = []
-        for r in range(self.num_rows):
-            self.rows.append( [CellType.EMPTY] * self.num_cols )
+        for row in range(self.num_rows):
+            self.rows.append([CellType.EMPTY] * self.num_cols)
+            for col in range(self.num_cols):
+                if TestBoard[self.num_rows - row -1][col] == 2:
+                    self.rows[row][col] = CellType.WALL
 
-    def getCellType(self, col, row):
+    def getCellType(self, row, col):
         return self.rows[row][col]
 
-    def getCoordinates(self, col, row):
-        """Returns the center of the cell at col x row."""
+    def getCoordinates(self, row, col):
+        """Returns the center of the cell at col, row."""
         return ((col + 0.5) * CELL_SIZE, (row + 0.5) * CELL_SIZE)
+
+    def draw(self):
+        for row in range(self.num_rows):
+            for col in range(self.num_cols):
+                center_x, center_y = self.getCoordinates(row, col)
+                if self.getCellType(row, col) == CellType.WALL:
+                    arcade.draw_rectangle_filled(center_x, center_y,
+                        CELL_SIZE, CELL_SIZE, arcade.color.GRAY)
 
 class CellType(Enum):
     EMPTY = 1
@@ -81,7 +114,6 @@ class MonsterGame(arcade.Window):
     def setup(self):
         """ One-time setup """
         self.board = GameBoard()
-        print( self.board.getCellType(2,2))
 
         self.sprites = arcade.SpriteList()
         self.hero = Hero(self.board)
@@ -96,6 +128,7 @@ class MonsterGame(arcade.Window):
         """ Render the screen. """
         arcade.start_render()
         arcade.draw_text('Monsters', 300, 500, arcade.color.BLACK, 24)
+        self.board.draw()
         self.sprites.draw()
 
 
