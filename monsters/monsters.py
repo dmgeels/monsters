@@ -32,24 +32,45 @@ TestBoard = [
 [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ]]
 
 
+TEXTURE_LEFT = 0
+TEXTURE_RIGHT = 1
+
 class Hero(arcade.Sprite):
     """Sprite class for hero"""
 
     def __init__(self, board):
-        super().__init__('img/character.png', scale=0.4)
-        self.board = board
+        super().__init__()
         self.col = 1
         self.row = 1
+        self.textures.append(arcade.load_texture('img/character.png', scale=0.4))
+        # Load a second, mirrored texture, for when we want to face right.
+        self.textures.append(arcade.load_texture('img/character.png', mirrored=True, scale=0.4))
+        self.set_texture(TEXTURE_RIGHT)
+        self.board = board
         self.center_x, self.center_y = self.board.getCoordinates(self.row, self.col)
 
 
     def Move(self, direction):
-        if direction == Direction.UP:
-            if self.board.getCellType(self.row, self.col + 1) == CellType.EMPTY:
-                self.row += 1
+        """Moves the hero one space, unless blocked by a wall."""
+        # map direction to row, column changes and sprite texture and angle.
+        DELTAS = {
+            Direction.UP: (1, 0, TEXTURE_LEFT, 270),
+            Direction.DOWN: (-1, 0, TEXTURE_LEFT, 90),
+            Direction.LEFT: (0, -1, TEXTURE_LEFT, 0),
+            Direction.RIGHT: (0, 1, TEXTURE_RIGHT, 0)
+        }
+        row_delta, col_delta, texture_index, angle = DELTAS[direction];
+        # Change direction first.
+        self.set_texture(texture_index)
+        self.angle = angle;
+        # Now, move one space if there is no wall there.
+        if self.board.getCellType(self.row + row_delta, self.col + col_delta) == CellType.EMPTY:
+            self.row += row_delta;
+            self.col += col_delta;
+        else:
+            arcade.set_background_color(arcade.color.DARK_RED)
 
         self.center_x, self.center_y = self.board.getCoordinates(self.row, self.col)
-        # TODO: finish
 
 class Monster(arcade.Sprite):
     """Sprite class for all monsters"""
@@ -107,7 +128,6 @@ class MonsterGame(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height, title='monsters')
 
-        arcade.set_background_color(arcade.color.AMAZON)
         self.angle_delta = 1
         self.show_points = False
 
@@ -127,6 +147,7 @@ class MonsterGame(arcade.Window):
     def on_draw(self):
         """ Render the screen. """
         arcade.start_render()
+        arcade.set_background_color(arcade.color.AMAZON)
         arcade.draw_text('Monsters', 300, 500, arcade.color.BLACK, 24)
         self.board.draw()
         self.sprites.draw()
@@ -139,13 +160,21 @@ class MonsterGame(arcade.Window):
 
     def on_key_press(self, key, modifiers):
         """ Handles keyboard. Quits on 'q'. """
+        KEYS_TO_DIRECTIONS = {
+            arcade.key.UP: Direction.UP,
+            arcade.key.DOWN: Direction.DOWN,
+            arcade.key.LEFT: Direction.LEFT,
+            arcade.key.RIGHT: Direction.RIGHT
+        }
+
         if key == arcade.key.Q:
             self.quit()
         elif key == arcade.key.G:
             self.hero.alpha = 1.2 - self.hero.alpha
             print('Ghost!', self.hero.alpha)
-        elif key == arcade.key.UP:
-            self.hero.Move(Direction.UP)
+        elif key in KEYS_TO_DIRECTIONS:
+
+            self.hero.Move(KEYS_TO_DIRECTIONS[key])
 
     def on_key_release(self, key, modifiers):
         pass
