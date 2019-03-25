@@ -40,7 +40,18 @@ class Hero(arcade.Sprite):
         self.board = board
         self.col = 1
         self.row = 1
+        self.is_ghost = False
         self.center_x, self.center_y = self.board.getCoordinates(self.row, self.col)
+
+    def ghost(self, is_ghost):
+        self.is_ghost = is_ghost
+
+        if is_ghost:
+            self.alpha = 0.2
+        else:
+            self.alpha = 1
+
+
 
 
     def Move(self, direction):
@@ -142,8 +153,11 @@ class MonsterGame(arcade.Window):
         if key == arcade.key.Q:
             self.quit()
         elif key == arcade.key.G:
-            self.hero.alpha = 1.2 - self.hero.alpha
-            print('Ghost!', self.hero.alpha)
+            if self.hero.is_ghost:
+                self.hero.ghost(False)
+            else:
+                self.hero.ghost(True)
+
         elif key == arcade.key.UP:
             self.hero.Move(Direction.UP)
 
