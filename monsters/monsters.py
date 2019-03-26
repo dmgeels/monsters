@@ -10,26 +10,28 @@ SCREEN_WIDTH = CELL_SIZE * WINDOW_COLS
 SCREEN_HEIGHT = CELL_SIZE * WINDOW_ROWS
 
 TestBoard = [
-[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ],
-[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
-[2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2 ],
-[2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2 ],
-[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2 ],
-[2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
-[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2 ],
-[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2 ],
-[2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 2 ],
-[2, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
-[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2 ],
-[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2 ],
-[2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
-[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
-[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
-[2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
-[2, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
-[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2 ],
-[2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2 ],
-[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ]]
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+'B W     W          WWW       B',
+'B W    WWW           WW      B',
+'B      W                     B',
+'B                            B',
+'B WWW      WWW    W     WW   B',
+'B             WW    WW       B',
+'B                            B',
+'B       WWW         W      WWB',
+'B         WW        WW       B',
+'B WWW                        B',
+'B  W                         B',
+'B     WW         WW          B',
+'B                            B',
+'B                            B',
+'B         WW         WW    W B',
+'B WW         WWW           W B',
+'BWW                        W B',
+'B        WW        WW        B',
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+]
+
 
 
 TEXTURE_LEFT = 0
@@ -75,7 +77,8 @@ class Hero(arcade.Sprite):
         self.set_texture(texture_index)
         self.angle = angle;
         # Now, move one space if there is no wall there.
-        if self.board.getCellType(self.row + row_delta, self.col + col_delta) == CellType.EMPTY:
+        cell_type = self.board.getCellType(self.row + row_delta, self.col + col_delta)
+        if cell_type == CellType.EMPTY or (self.is_ghost and cell_type != CellType.BARRIER):
             self.row += row_delta;
             self.col += col_delta;
         else:
@@ -105,8 +108,10 @@ class GameBoard():
         for row in range(self.num_rows):
             self.rows.append([CellType.EMPTY] * self.num_cols)
             for col in range(self.num_cols):
-                if TestBoard[self.num_rows - row -1][col] == 2:
+                if TestBoard[self.num_rows - row -1][col] == "W":
                     self.rows[row][col] = CellType.WALL
+                if TestBoard[self.num_rows - row -1][col] == "B":
+                    self.rows[row][col] = CellType.BARRIER
 
     def getCellType(self, row, col):
         return self.rows[row][col]
@@ -119,13 +124,18 @@ class GameBoard():
         for row in range(self.num_rows):
             for col in range(self.num_cols):
                 center_x, center_y = self.getCoordinates(row, col)
-                if self.getCellType(row, col) == CellType.WALL:
+                cell_type = self.getCellType(row, col)
+                if cell_type == CellType.WALL:
                     arcade.draw_rectangle_filled(center_x, center_y,
                         CELL_SIZE, CELL_SIZE, arcade.color.GRAY)
+                elif cell_type == CellType.BARRIER:
+                    arcade.draw_rectangle_filled(center_x, center_y,
+                            CELL_SIZE, CELL_SIZE, arcade.color.BLACK)
 
 class CellType(Enum):
     EMPTY = 1
     WALL = 2
+    BARRIER = 3
 
 class Direction(Enum):
     UP = 1
