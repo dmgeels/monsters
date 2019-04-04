@@ -37,31 +37,16 @@ TestBoard = [
 TEXTURE_LEFT = 0
 TEXTURE_RIGHT = 1
 
-class Hero(arcade.Sprite):
-    """Sprite class for hero"""
+class Sprite(arcade.Sprite):
+    """Base class for all game characters."""
 
-    def __init__(self, board):
+    def __init__(self, board, row, col):
         super().__init__()
-        self.col = 1
-        self.row = 1
-        self.is_ghost = False
-        self.textures.append(arcade.load_texture('img/character.png', scale=0.4))
-        # Load a second, mirrored texture, for when we want to face right.
-        self.textures.append(arcade.load_texture('img/character.png', mirrored=True, scale=0.4))
-        self.set_texture(TEXTURE_RIGHT)
+        self.col = col
+        self.row = row
         self.board = board
         self.center_x, self.center_y = self.board.getCoordinates(self.row, self.col)
-
-    def ghost(self, is_ghost):
-        self.is_ghost = is_ghost
-
-        if is_ghost:
-            self.alpha = 0.2
-        else:
-            self.alpha = 1
-
-
-
+        self.angle = 0
 
     def Move(self, direction):
         """Moves the hero one space, unless blocked by a wall."""
@@ -86,17 +71,39 @@ class Hero(arcade.Sprite):
 
         self.center_x, self.center_y = self.board.getCoordinates(self.row, self.col)
 
-class Monster(arcade.Sprite):
+
+class Hero(Sprite):
+    """Sprite class for hero"""
+
+    def __init__(self, board):
+        super().__init__(board, row=1, col=1)
+        self.is_ghost = False
+        self.textures.append(arcade.load_texture('img/character.png', scale=0.4))
+        # Load a second, mirrored texture, for when we want to face right.
+        self.textures.append(arcade.load_texture('img/character.png', mirrored=True, scale=0.4))
+        self.set_texture(TEXTURE_RIGHT)
+
+    def ghost(self, is_ghost):
+        self.is_ghost = is_ghost
+        if is_ghost:
+            self.alpha = 0.2
+        else:
+            self.alpha = 1
+
+class Monster(Sprite):
     """Sprite class for all monsters"""
 
-    def __init__(self, filename, scale, x, y):
-        super().__init__(filename, scale=scale, center_x=x, center_y=y)
+    def __init__(self, board, row, col, filename, scale):
+        super().__init__(board, row, col)
+        self.textures.append(arcade.load_texture(filename, scale=scale))
+        self.set_texture(0)
 
 class Ogre(Monster):
     """Sprite class for Ogre"""
 
-    def __init__(self, x, y):
-        super().__init__('img/Ogre.png', 3, x, y)
+    def __init__(self, board, row, col):
+        super().__init__(board, row, col, 'img/Ogre.png', 1.5)
+
 
 class GameBoard():
     """Stores board state as a 2-d grid."""
@@ -159,6 +166,8 @@ class MonsterGame(arcade.Window):
         self.sprites = arcade.SpriteList()
         self.hero = Hero(self.board)
         self.sprites.append(self.hero)
+        self.ogre = Ogre(self.board, 5, 3)
+        self.sprites.append(self.ogre)
 
 
     def quit(self):
@@ -169,10 +178,9 @@ class MonsterGame(arcade.Window):
         """ Render the screen. """
         arcade.start_render()
         arcade.set_background_color(arcade.color.AMAZON)
-        arcade.draw_text('Monsters', 300, 500, arcade.color.BLACK, 24)
         self.board.draw()
         self.sprites.draw()
-
+        arcade.draw_text('Monsters', 410, 612, color=arcade.color.RED, font_size=24)
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
