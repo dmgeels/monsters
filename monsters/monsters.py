@@ -78,9 +78,9 @@ class Hero(Sprite):
     def __init__(self, board):
         super().__init__(board, row=1, col=1)
         self.is_ghost = False
-        self.textures.append(arcade.load_texture('img/character.png', scale=0.4))
+        self.textures.append(arcade.load_texture('img/character.png', mirrored=True, scale=1))
         # Load a second, mirrored texture, for when we want to face right.
-        self.textures.append(arcade.load_texture('img/character.png', mirrored=True, scale=0.4))
+        self.textures.append(arcade.load_texture('img/character.png', scale=1))
         self.set_texture(TEXTURE_RIGHT)
 
     def ghost(self, is_ghost):
@@ -98,11 +98,17 @@ class Monster(Sprite):
         self.textures.append(arcade.load_texture(filename, scale=scale))
         self.set_texture(0)
 
-class Ogre(Monster):
-    """Sprite class for Ogre"""
+class Dragon(Monster):
+    """Sprite class for Dragon"""
 
     def __init__(self, board, row, col):
-        super().__init__(board, row, col, 'img/Ogre.png', 1.5)
+        super().__init__(board, row, col, 'img/dragon.png', 1.5)
+
+class Ninja(Monster):
+    """Sprite class for Ninja"""
+
+    def __init__(self, board, row, col):
+        super().__init__(board, row, col, 'img/ninja.png', 1.5)
 
 
 class GameBoard():
@@ -166,9 +172,6 @@ class MonsterGame(arcade.Window):
         self.sprites = arcade.SpriteList()
         self.hero = Hero(self.board)
         self.sprites.append(self.hero)
-        self.ogre = Ogre(self.board, 5, 3)
-        self.sprites.append(self.ogre)
-
 
     def quit(self):
         """ Exit the game """
