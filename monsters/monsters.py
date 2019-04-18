@@ -11,7 +11,7 @@ SCREEN_HEIGHT = CELL_SIZE * WINDOW_ROWS
 
 TestBoard = [
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
-'B W     W          WWW       B',
+'B W     W          WWW     D B',
 'B W    WWW           WW      B',
 'B      W                     B',
 'B                            B',
@@ -21,7 +21,7 @@ TestBoard = [
 'B       WWW         W      WWB',
 'B         WW        WW       B',
 'B WWW                        B',
-'B  W                         B',
+'B  W                       N B',
 'B     WW         WW          B',
 'B                            B',
 'B                            B',
@@ -102,13 +102,13 @@ class Dragon(Monster):
     """Sprite class for Dragon"""
 
     def __init__(self, board, row, col):
-        super().__init__(board, row, col, 'img/dragon.png', 1.5)
+        super().__init__(board, row, col, 'img/dragon.png', 1)
 
 class Ninja(Monster):
     """Sprite class for Ninja"""
 
     def __init__(self, board, row, col):
-        super().__init__(board, row, col, 'img/ninja.png', 1.5)
+        super().__init__(board, row, col, 'img/ninja.png', 1)
 
 
 class GameBoard():
@@ -123,8 +123,12 @@ class GameBoard():
             for col in range(self.num_cols):
                 if TestBoard[self.num_rows - row -1][col] == "W":
                     self.rows[row][col] = CellType.WALL
-                if TestBoard[self.num_rows - row -1][col] == "B":
+                elif TestBoard[self.num_rows - row -1][col] == "B":
                     self.rows[row][col] = CellType.BARRIER
+                elif TestBoard[self.num_rows - row -1][col] == "D":
+                    self.rows[row][col] = CellType.DRAGON
+                elif TestBoard[self.num_rows - row -1][col] == "N":
+                    self.rows[row][col] = CellType.NINJA
 
     def getCellType(self, row, col):
         return self.rows[row][col]
@@ -143,12 +147,26 @@ class GameBoard():
                         CELL_SIZE, CELL_SIZE, arcade.color.GRAY)
                 elif cell_type == CellType.BARRIER:
                     arcade.draw_rectangle_filled(center_x, center_y,
-                            CELL_SIZE, CELL_SIZE, arcade.color.BLACK)
+                        CELL_SIZE, CELL_SIZE, arcade.color.BLACK)
+
+    def set_up_monters(self):
+        mon_list = []
+        for row in range(self.num_rows):
+            for col in range(self.num_cols):
+                cell_type = self.getCellType(row, col)
+                if cell_type == CellType.DRAGON:
+                    mon_list.append(Dragon(self, row, col))
+                elif cell_type == CellType.NINJA:
+                    mon_list.append(Ninja(self, row, col))
+        return mon_list
 
 class CellType(Enum):
     EMPTY = 1
     WALL = 2
     BARRIER = 3
+    NINJA = 4
+    DRAGON = 5
+
 
 class Direction(Enum):
     UP = 1
@@ -172,6 +190,10 @@ class MonsterGame(arcade.Window):
         self.sprites = arcade.SpriteList()
         self.hero = Hero(self.board)
         self.sprites.append(self.hero)
+        self.monsters = self.board.set_up_monters()
+        for monster in self.monsters:
+            self.sprites.append(monster)
+
 
     def quit(self):
         """ Exit the game """
