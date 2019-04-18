@@ -48,6 +48,7 @@ class Sprite(arcade.Sprite):
         self.center_x, self.center_y = self.board.getCoordinates(self.row, self.col)
         self.angle = 0
 
+
     def Move(self, direction):
         """Moves the hero one space, unless blocked by a wall."""
         # map direction to row, column changes and sprite texture and angle.
@@ -57,31 +58,44 @@ class Sprite(arcade.Sprite):
             Direction.LEFT: (0, -1, TEXTURE_LEFT, 0),
             Direction.RIGHT: (0, 1, TEXTURE_RIGHT, 0)
         }
-        row_delta, col_delta, texture_index, angle = DELTAS[direction];
+        row_delta, col_delta, texture_index, angle = DELTAS[direction]
         # Change direction first.
+        self.last_direction = direction
+
         self.set_texture(texture_index)
-        self.angle = angle;
+        self.angle = angle
         # Now, move one space if there is no wall there.
         cell_type = self.board.getCellType(self.row + row_delta, self.col + col_delta)
         if cell_type == CellType.EMPTY or (self.is_ghost and cell_type != CellType.BARRIER):
-            self.row += row_delta;
-            self.col += col_delta;
+            self.row += row_delta
+            self.col += col_delta
         else:
             arcade.set_background_color(arcade.color.DARK_RED)
 
         self.center_x, self.center_y = self.board.getCoordinates(self.row, self.col)
 
+    def attack(self):
+        DELTAS = {
+            Direction.UP: (1, 0, TEXTURE_LEFT, 270),
+            Direction.DOWN: (-1, 0, TEXTURE_LEFT, 90),
+            Direction.LEFT: (0, -1, TEXTURE_LEFT, 0),
+            Direction.RIGHT: (0, 1, TEXTURE_RIGHT, 0)
+        }
+        row_delta, col_delta, texture_index, angle = DELTAS[self.last_direction]
+        cell_type = self.board.getCellType(self.row + row_delta, self.col + col_delta)
+        if cell_type == CellType.NINJA or CellType.DRAGON:
+            print ("Hiya")
 
 class Hero(Sprite):
     """Sprite class for hero"""
 
     def __init__(self, board):
         super().__init__(board, row=1, col=1)
-        self.is_ghost = False
         self.textures.append(arcade.load_texture('img/character.png', mirrored=True, scale=1))
         # Load a second, mirrored texture, for when we want to face right.
         self.textures.append(arcade.load_texture('img/character.png', scale=1))
         self.set_texture(TEXTURE_RIGHT)
+        self.is_ghost = False
 
     def ghost(self, is_ghost):
         self.is_ghost = is_ghost
