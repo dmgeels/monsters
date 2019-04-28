@@ -11,12 +11,12 @@ SCREEN_HEIGHT = CELL_SIZE * WINDOW_ROWS
 
 TestBoard = [
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
-'B W     W          WWW     D B',
+'B W     W  H       WWW     D B',
 'B W    WWW           WW      B',
 'B      W                     B',
 'B                            B',
 'B WWW      WWW    W     WW   B',
-'B             WW    WW       B',
+'B   I         WW    WW       B',
 'B                            B',
 'B       WWW         W      WWB',
 'B         WW        WW       B',
@@ -66,7 +66,7 @@ class Sprite(arcade.Sprite):
         self.angle = angle
         # Now, move one space if there is no wall there.
         cell_type = self.board.getCellType(self.row + row_delta, self.col + col_delta)
-        if cell_type == CellType.EMPTY or (self.is_ghost and cell_type != CellType.BARRIER):
+        if cell_type == CellType.EMPTY or cell_type == CellType.SOCK or cell_type == CellType.SHOE or (self.is_ghost and cell_type != CellType.BARRIER):
             self.row += row_delta
             self.col += col_delta
         else:
@@ -112,6 +112,27 @@ class Monster(Sprite):
         self.textures.append(arcade.load_texture(filename, scale=scale))
         self.set_texture(0)
 
+
+class Item(Sprite):
+    """Sprite class for all items"""
+
+    def __init__(self, board, row, col, filename, scale):
+        super().__init__(board, row, col)
+        self.textures.append(arcade.load_texture(filename, scale=scale))
+        self.set_texture(0)
+
+class Shoe(Item):
+    """Sprite class for Invisibility shoe"""
+
+    def __init__(self, board, row, col):
+        super().__init__(board, row, col, 'img/invisibility shoe.png', 1)
+
+class Sock(Item):
+    """Sprite class for Health sock"""
+
+    def __init__(self, board, row, col):
+        super().__init__(board, row, col, 'img/health sock.png', 1)
+
 class Dragon(Monster):
     """Sprite class for Dragon"""
 
@@ -143,6 +164,11 @@ class GameBoard():
                     self.rows[row][col] = CellType.DRAGON
                 elif TestBoard[self.num_rows - row -1][col] == "N":
                     self.rows[row][col] = CellType.NINJA
+                elif TestBoard[self.num_rows - row -1][col] == "I":
+                    self.rows[row][col] = CellType.SHOE
+                elif TestBoard[self.num_rows - row -1][col] == "H":
+                    self.rows[row][col] = CellType.SOCK
+
 
     def getCellType(self, row, col):
         return self.rows[row][col]
@@ -163,7 +189,7 @@ class GameBoard():
                     arcade.draw_rectangle_filled(center_x, center_y,
                         CELL_SIZE, CELL_SIZE, arcade.color.BLACK)
 
-    def set_up_monters(self):
+    def set_up(self):
         mon_list = []
         for row in range(self.num_rows):
             for col in range(self.num_cols):
@@ -172,6 +198,10 @@ class GameBoard():
                     mon_list.append(Dragon(self, row, col))
                 elif cell_type == CellType.NINJA:
                     mon_list.append(Ninja(self, row, col))
+                elif cell_type == CellType.SOCK:
+                    mon_list.append(Sock(self, row, col))
+                elif cell_type == CellType.SHOE:
+                    mon_list.append(Shoe(self, row, col))
         return mon_list
 
 class CellType(Enum):
@@ -180,6 +210,8 @@ class CellType(Enum):
     BARRIER = 3
     NINJA = 4
     DRAGON = 5
+    SHOE = 6
+    SOCK = 7
 
 
 class Direction(Enum):
@@ -204,7 +236,7 @@ class MonsterGame(arcade.Window):
         self.sprites = arcade.SpriteList()
         self.hero = Hero(self.board)
         self.sprites.append(self.hero)
-        self.monsters = self.board.set_up_monters()
+        self.monsters = self.board.set_up()
         for monster in self.monsters:
             self.sprites.append(monster)
 
