@@ -9,7 +9,8 @@ WINDOW_ROWS = 20
 SCREEN_WIDTH = CELL_SIZE * WINDOW_COLS
 SCREEN_HEIGHT = CELL_SIZE * WINDOW_ROWS
 
-TestBoard = [
+Boards = [
+[
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
 'B W     W  H       WWW     D B',
 'B W    WWW           WW      B',
@@ -31,6 +32,7 @@ TestBoard = [
 'B        WW        WW        B',
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
 ]
+]
 
 
 
@@ -47,6 +49,16 @@ class Sprite(arcade.Sprite):
         self.board = board
         self.center_x, self.center_y = self.board.getCoordinates(self.row, self.col)
         self.angle = 0
+        self.frame_update = 0
+        self.texture_index = 0
+    def update(self):
+        self.frame_update += 1
+        if self.frame_update % 6 == 0:
+            self.texture_index += 1
+            if self.texture_index == len(self.textures):
+                self.texture_index = 0
+            self.set_texture(self.texture_index)
+
 
 
     def Move(self, direction):
@@ -62,13 +74,23 @@ class Sprite(arcade.Sprite):
         # Change direction first.
         self.last_direction = direction
 
-        self.set_texture(texture_index)
-        self.angle = angle
+        #self.set_texture(texture_index)
+        #self.angle = angle
         # Now, move one space if there is no wall there.
         cell_type = self.board.getCellType(self.row + row_delta, self.col + col_delta)
-        if cell_type == CellType.EMPTY or cell_type == CellType.SOCK or cell_type == CellType.SHOE or (self.is_ghost and cell_type != CellType.BARRIER):
+        if cell_type == CellType.EMPTY or (self.is_ghost and cell_type != CellType.BARRIER):
             self.row += row_delta
             self.col += col_delta
+        elif cell_type == CellType.SOCK:
+            self.health += 1
+            self.row += row_delta
+            self.col += col_delta
+            self.board.remove(self.row, self.col)
+        elif cell_type == CellType.SHOE:
+            self.is_ghost == True
+            self.row += row_delta
+            self.col += col_delta
+            self.board.remove(self.row, self.col)
         else:
             arcade.set_background_color(arcade.color.DARK_RED)
 
@@ -91,10 +113,19 @@ class Hero(Sprite):
 
     def __init__(self, board):
         super().__init__(board, row=1, col=1)
-        self.textures.append(arcade.load_texture('img/character.png', mirrored=True, scale=1))
-        # Load a second, mirrored texture, for when we want to face right.
-        self.textures.append(arcade.load_texture('img/character.png', scale=1))
-        self.set_texture(TEXTURE_RIGHT)
+        self.health = 2
+        self.textures.extend(arcade.load_textures('img/Hero.png',
+            [
+                [0, 0, 32, 32],
+                [32, 0, 32, 32],
+                [64, 0, 32, 32],
+                [0, 32, 32, 32],
+                [32, 32, 32, 32],
+                [64, 32, 32, 32],
+                [0, 64, 32, 32],
+            ]
+        ))
+        self.set_texture(2)
         self.is_ghost = False
 
     def ghost(self, is_ghost):
@@ -125,7 +156,7 @@ class Shoe(Item):
     """Sprite class for Invisibility shoe"""
 
     def __init__(self, board, row, col):
-        super().__init__(board, row, col, 'img/invisibility shoe.png', 1)
+        super().__init__(board, row, col, 'img/Haunted shoe.png', 1)
 
 class Sock(Item):
     """Sprite class for Health sock"""
@@ -149,26 +180,38 @@ class Ninja(Monster):
 class GameBoard():
     """Stores board state as a 2-d grid."""
 
-    def __init__(self):
+    def __init__(self, board_number):
         self.num_cols = WINDOW_COLS
         self.num_rows = WINDOW_ROWS
         self.rows = []
         for row in range(self.num_rows):
             self.rows.append([CellType.EMPTY] * self.num_cols)
             for col in range(self.num_cols):
-                if TestBoard[self.num_rows - row -1][col] == "W":
+                cell_code = Boards[board_number][self.num_rows - row -1][col]
+                if cell_code == "W":
                     self.rows[row][col] = CellType.WALL
-                elif TestBoard[self.num_rows - row -1][col] == "B":
+                elif cell_code == "B":
                     self.rows[row][col] = CellType.BARRIER
-                elif TestBoard[self.num_rows - row -1][col] == "D":
+                elif cell_code == "D":
                     self.rows[row][col] = CellType.DRAGON
-                elif TestBoard[self.num_rows - row -1][col] == "N":
+                elif cell_code == "N":
                     self.rows[row][col] = CellType.NINJA
-                elif TestBoard[self.num_rows - row -1][col] == "I":
+                elif cell_code == "I":
                     self.rows[row][col] = CellType.SHOE
-                elif TestBoard[self.num_rows - row -1][col] == "H":
+                elif cell_code == "H":
                     self.rows[row][col] = CellType.SOCK
+                    print (row, col)
 
+    def remove(self, row, col):
+
+        self.rows[row][col] = CellType.EMPTY
+        for i in range(len(self.mon_list)):
+            monster = self.mon_list[i]
+            if monster.row == row and monster.row == col:
+                del self.mon_list[i]
+                return
+
+        print (row, col)
 
     def getCellType(self, row, col):
         return self.rows[row][col]
@@ -190,19 +233,19 @@ class GameBoard():
                         CELL_SIZE, CELL_SIZE, arcade.color.BLACK)
 
     def set_up(self):
-        mon_list = []
+        self.mon_list = []
         for row in range(self.num_rows):
             for col in range(self.num_cols):
                 cell_type = self.getCellType(row, col)
                 if cell_type == CellType.DRAGON:
-                    mon_list.append(Dragon(self, row, col))
+                    self.mon_list.append(Dragon(self, row, col))
                 elif cell_type == CellType.NINJA:
-                    mon_list.append(Ninja(self, row, col))
+                    self.mon_list.append(Ninja(self, row, col))
                 elif cell_type == CellType.SOCK:
-                    mon_list.append(Sock(self, row, col))
+                    self.mon_list.append(Sock(self, row, col))
                 elif cell_type == CellType.SHOE:
-                    mon_list.append(Shoe(self, row, col))
-        return mon_list
+                    self.mon_list.append(Shoe(self, row, col))
+        return self.mon_list
 
 class CellType(Enum):
     EMPTY = 1
@@ -231,7 +274,7 @@ class MonsterGame(arcade.Window):
 
     def setup(self):
         """ One-time setup """
-        self.board = GameBoard()
+        self.board = GameBoard(0)
 
         self.sprites = arcade.SpriteList()
         self.hero = Hero(self.board)
@@ -246,7 +289,6 @@ class MonsterGame(arcade.Window):
         arcade.close_window()
 
     def on_draw(self):
-        """ Render the screen. """
         arcade.start_render()
         arcade.set_background_color(arcade.color.AMAZON)
         self.board.draw()
@@ -256,7 +298,7 @@ class MonsterGame(arcade.Window):
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
         # self.sprite.angle += self.angle_delta
-        pass
+        self.hero.update()
 
     def on_key_press(self, key, modifiers):
         """ Handles keyboard. Quits on 'q'. """
