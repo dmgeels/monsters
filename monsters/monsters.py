@@ -59,6 +59,35 @@ class Sprite(arcade.Sprite):
                 self.texture_index = 0
             self.set_texture(self.texture_index)
 
+    def GetMoveDirection(self):
+        """Each type of sprite should define this method. Default is silly."""
+        return random.choice(list(Direction)) # Random Direction
+
+    def GetMoveResult(self, cell_type):
+        """Each type of sprite should define this method. Default is silly."""
+        return MoveResult.MOVE
+
+    def MoveOneSpace(self):
+        """Moves the sprite one space."""
+        direction = self.GetMoveDirection()
+        self.last_direction = direction
+        # map direction to row, column changes.
+        DELTAS = {
+            Direction.UP: (1, 0),
+            Direction.DOWN: (-1, 0),
+            Direction.LEFT: (0, -1),
+            Direction.RIGHT: (0, 1)
+        }
+        row_delta, col_delta = DELTAS[direction]
+        next_cell_type = self.board.getCellType(self.row + row_delta, self.col + col_delta)
+        result = self.GetCollisionAction(next_cell_type)
+        print( 'Moving ' + direction + ', next cell type=' + next_cell_type +
+            'move result=' + result );
+        if result == MoveResult.MOVE:
+            self.row += row_delta
+            self.col += col_delta
+        elif result == MoveResult.DIE:
+            pass # TODO: delete the sprite.
 
 
     def Move(self, direction):
@@ -262,6 +291,12 @@ class Direction(Enum):
     DOWN = 2
     LEFT = 3
     RIGHT = 4
+
+class MoveResult(Enum):
+    """What happens when two sprites collide."""
+    MOVE = 1
+    STOP = 2
+    DELETE = 3
 
 class MonsterGame(arcade.Window):
     """ Main application class. """
