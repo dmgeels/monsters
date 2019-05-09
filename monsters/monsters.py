@@ -71,23 +71,18 @@ class Sprite(arcade.Sprite):
         """Moves the sprite one space."""
         direction = self.GetMoveDirection()
         self.last_direction = direction
-        # map direction to row, column changes.
-        DELTAS = {
-            Direction.UP: (1, 0),
-            Direction.DOWN: (-1, 0),
-            Direction.LEFT: (0, -1),
-            Direction.RIGHT: (0, 1)
-        }
-        row_delta, col_delta = DELTAS[direction]
-        next_cell_type = self.board.getCellType(self.row + row_delta, self.col + col_delta)
+        next_cell_type = self.board.getCellType(self.row + direction.row_delta,
+            self.col + direction.col_delta)
         result = self.GetCollisionAction(next_cell_type)
         print( 'Moving ' + direction + ', next cell type=' + next_cell_type +
             'move result=' + result );
         if result == MoveResult.MOVE:
-            self.row += row_delta
-            self.col += col_delta
+            self.row += direction.row_delta
+            self.col += direction.col_delta
         elif result == MoveResult.DIE:
             pass # TODO: delete the sprite.
+        elif result == MoveResult.STOP:
+            pass # Wait here.
 
 
     def Move(self, direction):
@@ -285,12 +280,14 @@ class CellType(Enum):
     SHOE = 6
     SOCK = 7
 
-
 class Direction(Enum):
-    UP = 1
-    DOWN = 2
-    LEFT = 3
-    RIGHT = 4
+    UP = (1, 0)
+    DOWN = (-1, 0)
+    LEFT = (0, -1)
+    RIGHT = (0, 1)
+    def __init__(self, row_delta, col_delta):
+        self.row_delta = row_delta
+        self.col_delta = col_delta
 
 class MoveResult(Enum):
     """What happens when two sprites collide."""
