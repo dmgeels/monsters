@@ -137,7 +137,7 @@ class Hero(Sprite):
 
     def __init__(self, board):
         super().__init__(board, row=1, col=1)
-        self.health = 2
+        self.health = 3
         self.textures.extend(arcade.load_textures('img/Hero.png',
             [
                 [0, 0, 32, 32],
@@ -149,8 +149,24 @@ class Hero(Sprite):
                 [0, 64, 32, 32],
             ]
         ))
+        self.board = board
         self.set_texture(2)
         self.is_ghost = False
+        self.has_shoe = False
+
+    def draw_inventory(self):
+        shoe = Shoe(self.board, 15, 0)
+        if self.has_shoe:
+            shoe.draw()
+        heart = Heart(self.board, 0, 1)
+        for i in range(self.health):
+            heart.draw()
+            heart.center_x += 20
+
+
+
+
+
 
     def ghost(self, is_ghost):
         self.is_ghost = is_ghost
@@ -162,11 +178,25 @@ class Hero(Sprite):
 class Monster(Sprite):
     """Sprite class for all monsters"""
 
-    def __init__(self, board, row, col, filename, scale):
+    def __init__(self, board, row, col, filename, scale, hero):
         super().__init__(board, row, col)
         self.textures.append(arcade.load_texture(filename, scale=scale))
         self.set_texture(0)
+        self.hero = hero
+    def GetMoveDirection(self):
 
+        hero_row_distance = self.hero.row - self.row
+        hero_col_distance = self.hero.col - self.col
+        if abs(hero_col_distance) > abs(hero_row_distance):
+            if hero_col_distance > 0:
+                return Direction.RIGHT
+            else:
+                return Direction.LEFT
+        else:
+            if hero_row_distance < 0:
+                return Direction.DOWN
+            else:
+                return Direction.UP
 
 class Item(Sprite):
     """Sprite class for all items"""
@@ -187,18 +217,22 @@ class Sock(Item):
 
     def __init__(self, board, row, col):
         super().__init__(board, row, col, 'img/health sock.png', 1)
+class Heart(Item):
+    """Sprite class for "Health" """
+    def __init__(self, board, row, col):
+        super().__init__(board, row, col, 'img/Heart.png', 1)
 
 class Dragon(Monster):
     """Sprite class for Dragon"""
 
-    def __init__(self, board, row, col):
-        super().__init__(board, row, col, 'img/dragon.png', 1)
+    def __init__(self, board, row, col, hero):
+        super().__init__(board, row, col, 'img/dragon.png', 1, hero)
 
 class Ninja(Monster):
     """Sprite class for Ninja"""
 
-    def __init__(self, board, row, col):
-        super().__init__(board, row, col, 'img/ninja.png', 1)
+    def __init__(self, board, row, col, hero):
+        super().__init__(board, row, col, 'img/ninja.png', 1, hero)
 
 
 class GameBoard():
@@ -256,15 +290,15 @@ class GameBoard():
                     arcade.draw_rectangle_filled(center_x, center_y,
                         CELL_SIZE, CELL_SIZE, arcade.color.BLACK)
 
-    def set_up(self):
+    def set_up(self, hero):
         self.mon_list = []
         for row in range(self.num_rows):
             for col in range(self.num_cols):
                 cell_type = self.getCellType(row, col)
                 if cell_type == CellType.DRAGON:
-                    self.mon_list.append(Dragon(self, row, col))
+                    self.mon_list.append(Dragon(self, row, col, hero))
                 elif cell_type == CellType.NINJA:
-                    self.mon_list.append(Ninja(self, row, col))
+                    self.mon_list.append(Ninja(self, row, col, hero))
                 elif cell_type == CellType.SOCK:
                     self.mon_list.append(Sock(self, row, col))
                 elif cell_type == CellType.SHOE:
@@ -303,6 +337,7 @@ class MonsterGame(arcade.Window):
 
         self.angle_delta = 1
         self.show_points = False
+        self.frame_update = 0
 
     def setup(self):
         """ One-time setup """
@@ -311,7 +346,7 @@ class MonsterGame(arcade.Window):
         self.sprites = arcade.SpriteList()
         self.hero = Hero(self.board)
         self.sprites.append(self.hero)
-        self.monsters = self.board.set_up()
+        self.monsters = self.board.set_up(self.hero)
         for monster in self.monsters:
             self.sprites.append(monster)
 
@@ -320,10 +355,13 @@ class MonsterGame(arcade.Window):
         """ Exit the game """
         arcade.close_window()
 
+
+
     def on_draw(self):
         arcade.start_render()
         arcade.set_background_color(arcade.color.AMAZON)
         self.board.draw()
+        self.hero.draw_inventory()
         self.sprites.draw()
         arcade.draw_text('Monsters', 410, 612, color=arcade.color.RED, font_size=24)
 
@@ -331,6 +369,11 @@ class MonsterGame(arcade.Window):
         """ All the logic to move, and the game logic goes here. """
         # self.sprite.angle += self.angle_delta
         self.hero.update()
+        self.frame_update += 1
+        if self.frame_update % 60 == 0:
+            for monster in self.monsters[:1]:
+                print (monster.GetMoveDirection())
+
 
     def on_key_press(self, key, modifiers):
         """ Handles keyboard. Quits on 'q'. """
