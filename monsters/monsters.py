@@ -64,8 +64,11 @@ class Sprite(arcade.Sprite):
         return random.choice(list(Direction)) # Random Direction
 
     def GetMoveResult(self, cell_type):
-        """Each type of sprite should define this method. Default is silly."""
-        return MoveResult.MOVE
+        """Each type of sprite should define this method."""
+        if cell_type == CellType.WALL or cell_type == CellType.BARRIER:
+            return MoveResult.STOP
+        else:
+            return MoveResult.MOVE
 
     def MoveOneSpace(self):
         """Moves the sprite one space."""
@@ -73,13 +76,14 @@ class Sprite(arcade.Sprite):
         self.last_direction = direction
         next_cell_type = self.board.getCellType(self.row + direction.row_delta,
             self.col + direction.col_delta)
-        result = self.GetCollisionAction(next_cell_type)
-        print( 'Moving ' + direction + ', next cell type=' + next_cell_type +
-            'move result=' + result );
+        result = self.GetMoveResult(next_cell_type)
+        print( f'Moving {self.__class__}, {direction}, ' +
+            f'next cell type={next_cell_type} move result={result}' );
         if result == MoveResult.MOVE:
             self.row += direction.row_delta
             self.col += direction.col_delta
-        elif result == MoveResult.DIE:
+            self.center_x, self.center_y = self.board.getCoordinates(self.row, self.col)
+        elif result == MoveResult.DELETE:
             pass # TODO: delete the sprite.
         elif result == MoveResult.STOP:
             pass # Wait here.
@@ -136,7 +140,7 @@ class Hero(Sprite):
     """Sprite class for hero"""
 
     def __init__(self, board):
-        super().__init__(board, row=1, col=1)
+        super().__init__(board, row=10, col=10)
         self.health = 3
         self.textures.extend(arcade.load_textures('img/Hero.png',
             [
@@ -163,8 +167,18 @@ class Hero(Sprite):
             heart.draw()
             heart.center_x += 20
 
-
-
+    def GetMoveResult(self, cell_type):
+        """Each type of sprite should define this method. Default is silly."""
+        if cell_type == CellType.WALL and self.is_ghost:
+            return MoveResult.MOVE
+        elif cell_type in (CellType.EMPTY, CellType.SOCK, CellType.SHOE):
+            # TODO: pick up socks, shoes.
+            return MoveResult.MOVE
+        elif cell_type in (CellType.DRAGON, CellType.NINJA):
+            # TODO: get hurt
+            return MoveResult.STOP
+        else:
+            return super().GetMoveResult(cell_type)
 
 
 
@@ -371,9 +385,8 @@ class MonsterGame(arcade.Window):
         self.hero.update()
         self.frame_update += 1
         if self.frame_update % 60 == 0:
-            for monster in self.monsters[:1]:
-                print (monster.GetMoveDirection())
-
+            for sprite in self.sprites:
+                sprite.MoveOneSpace()
 
     def on_key_press(self, key, modifiers):
         """ Handles keyboard. Quits on 'q'. """
