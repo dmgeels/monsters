@@ -2,7 +2,7 @@ import os
 import arcade
 import random
 from enum import Enum
-from collectins import Counter
+from collections import Counter
 
 CELL_SIZE = 32
 WINDOW_COLS = 30
@@ -53,7 +53,8 @@ class Sprite(arcade.Sprite):
         self.angle = 0
         self.frame_update = 0
         self.texture_index = 0
-        self.debug_name = self.__class__ + Sprite.instance_count_by_class[self.__class__];
+        classname = str(self.__class__)
+        self.debug_name = f'{classname}-{Sprite.instance_count_by_class[classname]}';
         print( 'Created', self.debug_name )
 
     def update(self):
