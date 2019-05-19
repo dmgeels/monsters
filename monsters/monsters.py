@@ -211,6 +211,20 @@ class Monster(Sprite):
                 return Direction.DOWN
             else:
                 return Direction.UP
+class Projectile(Sprite):
+    """Sprite class for all Projectiles"""
+
+    def __init__(self, board, row, col, filename, direction):
+        self.direction = direction
+        super().__init__(board, row, col)
+        self.textures.append(arcade.load_texture(filename, scale=scale))
+        self.set_texture(0)
+    def GetMoveDirection(self):
+
+        hero_row_distance = self.hero.row - self.row
+        hero_col_distance = self.hero.col - self.col
+        if abs(hero_col_distance) > abs(hero_row_distance):
+            return 
 
 class Item(Sprite):
     """Sprite class for all items"""
