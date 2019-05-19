@@ -198,7 +198,10 @@ class Hero(Sprite):
             return MoveResult.STOP
         else:
             return super().GetMoveResult(cell_type)
-
+    def shoot(self):
+        """Shooting method"""
+        arrow = Arrow(self.board, self.row, self.col, self.last_direction)
+        return arrow
 
 
     def ghost(self, is_ghost):
@@ -234,17 +237,18 @@ class Monster(Sprite):
 class Projectile(Sprite):
     """Sprite class for all Projectiles"""
 
-    def __init__(self, board, row, col, filename, direction):
+    def __init__(self, board, row, col, filename, scale, direction):
         self.direction = direction
         super().__init__(board, row, col)
+        self.angle = direction.angle
         self.textures.append(arcade.load_texture(filename, scale=scale))
         self.set_texture(0)
     def GetMoveDirection(self):
-
-        hero_row_distance = self.hero.row - self.row
-        hero_col_distance = self.hero.col - self.col
-        if abs(hero_col_distance) > abs(hero_row_distance):
-            return 
+        return self.direction
+class Arrow(Projectile):
+    """Sprite class for arrows"""
+    def __init__(self, board, row, col, direction):
+        super().__init__(board, row, col, "img/arrow.png", 2, direction)
 
 class Item(Sprite):
     """Sprite class for all items"""
@@ -360,14 +364,15 @@ class CellType(Enum):
     SOCK = 7
 
 class Direction(Enum):
-    UP = (1, 0)
-    DOWN = (-1, 0)
-    LEFT = (0, -1)
-    RIGHT = (0, 1)
-    def __init__(self, row_delta, col_delta):
+    UP = (1, 0, 90)
+    DOWN = (-1, 0, 270)
+    LEFT = (0, -1, 180)
+    RIGHT = (0, 1, 0)
+
+    def __init__(self, row_delta, col_delta, angle):
         self.row_delta = row_delta
         self.col_delta = col_delta
-
+        self.angle = angle
 class MoveResult(Enum):
     """What happens when two sprites collide."""
     MOVE = 1
@@ -437,9 +442,13 @@ class MonsterGame(arcade.Window):
                 self.hero.ghost(True)
         elif key in KEYS_TO_DIRECTIONS:
             self.hero.SetMoveDirection(KEYS_TO_DIRECTIONS[key])
+        elif key == arcade.key.SPACE:
+            self.sprites.append(self.hero.shoot())
+
 
     def on_key_release(self, key, modifiers):
         pass
+
 
 
 def main():
