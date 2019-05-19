@@ -2,6 +2,7 @@ import os
 import arcade
 import random
 from enum import Enum
+from collectins import Counter
 
 CELL_SIZE = 32
 WINDOW_COLS = 30
@@ -41,6 +42,7 @@ TEXTURE_RIGHT = 1
 
 class Sprite(arcade.Sprite):
     """Base class for all game characters."""
+    instance_count_by_class = Counter()
 
     def __init__(self, board, row, col):
         super().__init__()
@@ -51,6 +53,9 @@ class Sprite(arcade.Sprite):
         self.angle = 0
         self.frame_update = 0
         self.texture_index = 0
+        self.debug_name = self.__class__ + Sprite.instance_count_by_class[self.__class__];
+        print( 'Created', self.debug_name )
+
     def update(self):
         self.frame_update += 1
         if self.frame_update % 6 == 0:
@@ -73,11 +78,14 @@ class Sprite(arcade.Sprite):
     def MoveOneSpace(self):
         """Moves the sprite one space."""
         direction = self.GetMoveDirection()
+        if direction is None:
+            print( f'Sprite {self.debug_name} not moving' )
+            return
         self.last_direction = direction
         next_cell_type = self.board.getCellType(self.row + direction.row_delta,
             self.col + direction.col_delta)
         result = self.GetMoveResult(next_cell_type)
-        print( f'Moving {self.__class__}, {direction}, ' +
+        print( f'Moving {self.debug_name}, {direction}, ' +
             f'next cell type={next_cell_type} move result={result}' );
         if result == MoveResult.MOVE:
             self.row += direction.row_delta
@@ -157,6 +165,7 @@ class Hero(Sprite):
         self.set_texture(2)
         self.is_ghost = False
         self.has_shoe = False
+        self.next_direction = None
 
     def draw_inventory(self):
         shoe = Shoe(self.board, 15, 0)
@@ -166,6 +175,15 @@ class Hero(Sprite):
         for i in range(self.health):
             heart.draw()
             heart.center_x += 20
+
+    def SetMoveDirection(self, direction):
+        self.next_direction = direction
+
+    def GetMoveDirection(self):
+        """Returns the last direction chosen by the user, if any."""
+        direction = self.next_direction
+        self.next_direction = None
+        return direction
 
     def GetMoveResult(self, cell_type):
         """Each type of sprite should define this method. Default is silly."""
@@ -197,8 +215,9 @@ class Monster(Sprite):
         self.textures.append(arcade.load_texture(filename, scale=scale))
         self.set_texture(0)
         self.hero = hero
-    def GetMoveDirection(self):
 
+    def GetMoveDirection(self):
+        """Always move closer to the hero."""
         hero_row_distance = self.hero.row - self.row
         hero_col_distance = self.hero.col - self.col
         if abs(hero_col_distance) > abs(hero_row_distance):
@@ -272,18 +291,15 @@ class GameBoard():
                     self.rows[row][col] = CellType.SHOE
                 elif cell_code == "H":
                     self.rows[row][col] = CellType.SOCK
-                    print (row, col)
 
     def remove(self, row, col):
-
+        """Deletes the monster at row,col."""
         self.rows[row][col] = CellType.EMPTY
         for i in range(len(self.mon_list)):
             monster = self.mon_list[i]
             if monster.row == row and monster.row == col:
                 del self.mon_list[i]
                 return
-
-        print (row, col)
 
     def getCellType(self, row, col):
         return self.rows[row][col]
@@ -405,7 +421,7 @@ class MonsterGame(arcade.Window):
             else:
                 self.hero.ghost(True)
         elif key in KEYS_TO_DIRECTIONS:
-            self.hero.Move(KEYS_TO_DIRECTIONS[key])
+            self.hero.SetMoveDirection(KEYS_TO_DIRECTIONS[key])
 
     def on_key_release(self, key, modifiers):
         pass
