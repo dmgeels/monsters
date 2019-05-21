@@ -55,7 +55,6 @@ class Sprite(arcade.Sprite):
         self.texture_index = 0
         classname = str(self.__class__)
         self.debug_name = f'{classname}-{Sprite.instance_count_by_class[classname]}';
-        print( 'Created', self.debug_name )
 
     def update(self):
         self.frame_update += 1
@@ -69,7 +68,7 @@ class Sprite(arcade.Sprite):
         """Each type of sprite should define this method. Default is silly."""
         return random.choice(list(Direction)) # Random Direction
 
-    def GetMoveResult(self, cell_type):
+    def GetMoveResult(self, cell_type, sprites_in_cell):
         """Each type of sprite should define this method."""
         if cell_type == CellType.WALL or cell_type == CellType.BARRIER:
             return MoveResult.STOP
@@ -80,76 +79,33 @@ class Sprite(arcade.Sprite):
         """Moves the sprite one space."""
         direction = self.GetMoveDirection()
         if direction is None:
-            print( f'Sprite {self.debug_name} not moving' )
+            # print( f'Sprite {self.debug_name} not moving' )
             return
         self.last_direction = direction
         next_cell_type = self.board.getCellType(self.row + direction.row_delta,
             self.col + direction.col_delta)
-        result = self.GetMoveResult(next_cell_type)
-        print( f'Moving {self.debug_name}, {direction}, ' +
-            f'next cell type={next_cell_type} move result={result}' );
+        if next_cell_type not in ( CellType.WALL, CellType.BARRIER):
+            next_cell_type = CellType.EMPTY
+        sprites_in_cell = self.board.getSprites(self.row + direction.row_delta,
+            self.col + direction.col_delta)
+        result = self.GetMoveResult(next_cell_type, sprites_in_cell)
+        # print( f'Moving {self.debug_name}, {direction}, ' +
+        #     f'next cell type={next_cell_type} move result={result}' );
         if result == MoveResult.MOVE:
             self.row += direction.row_delta
             self.col += direction.col_delta
             self.center_x, self.center_y = self.board.getCoordinates(self.row, self.col)
         elif result == MoveResult.DELETE:
-            pass # TODO: delete the sprite.
+            self.board.removeSprite( self )
         elif result == MoveResult.STOP:
             pass # Wait here.
 
-
-    def Move(self, direction):
-        """Moves the hero one space, unless blocked by a wall."""
-        # map direction to row, column changes and sprite texture and angle.
-        DELTAS = {
-            Direction.UP: (1, 0, TEXTURE_LEFT, 270),
-            Direction.DOWN: (-1, 0, TEXTURE_LEFT, 90),
-            Direction.LEFT: (0, -1, TEXTURE_LEFT, 0),
-            Direction.RIGHT: (0, 1, TEXTURE_RIGHT, 0)
-        }
-        row_delta, col_delta, texture_index, angle = DELTAS[direction]
-        # Change direction first.
-        self.last_direction = direction
-
-        #self.set_texture(texture_index)
-        #self.angle = angle
-        # Now, move one space if there is no wall there.
-        cell_type = self.board.getCellType(self.row + row_delta, self.col + col_delta)
-        if cell_type == CellType.EMPTY or (self.is_ghost and cell_type != CellType.BARRIER):
-            self.row += row_delta
-            self.col += col_delta
-        elif cell_type == CellType.SOCK:
-            self.health += 1
-            self.row += row_delta
-            self.col += col_delta
-            self.board.remove(self.row, self.col)
-        elif cell_type == CellType.SHOE:
-            self.is_ghost == True
-            self.row += row_delta
-            self.col += col_delta
-            self.board.remove(self.row, self.col)
-        else:
-            arcade.set_background_color(arcade.color.DARK_RED)
-
-        self.center_x, self.center_y = self.board.getCoordinates(self.row, self.col)
-
-    def attack(self):
-        DELTAS = {
-            Direction.UP: (1, 0, TEXTURE_LEFT, 270),
-            Direction.DOWN: (-1, 0, TEXTURE_LEFT, 90),
-            Direction.LEFT: (0, -1, TEXTURE_LEFT, 0),
-            Direction.RIGHT: (0, 1, TEXTURE_RIGHT, 0)
-        }
-        row_delta, col_delta, texture_index, angle = DELTAS[self.last_direction]
-        cell_type = self.board.getCellType(self.row + row_delta, self.col + col_delta)
-        if cell_type == CellType.NINJA or CellType.DRAGON:
-            print ("Hiya")
 
 class Hero(Sprite):
     """Sprite class for hero"""
 
     def __init__(self, board):
-        super().__init__(board, row=10, col=10)
+        super().__init__(board, row=10, col=12)
         self.health = 3
         self.textures.extend(arcade.load_textures('img/Hero.png',
             [
@@ -186,23 +142,33 @@ class Hero(Sprite):
         self.next_direction = None
         return direction
 
-    def GetMoveResult(self, cell_type):
+    def GetMoveResult(self, cell_type, sprites_in_cell):
         """Each type of sprite should define this method. Default is silly."""
-        if cell_type == CellType.WALL and self.is_ghost:
-            return MoveResult.MOVE
-        elif cell_type in (CellType.EMPTY, CellType.SOCK, CellType.SHOE):
-            # TODO: pick up socks, shoes.
-            return MoveResult.MOVE
-        elif cell_type in (CellType.DRAGON, CellType.NINJA):
-            # TODO: get hurt
+        if (cell_type == CellType.BARRIER or
+            (cell_type == CellType.WALL and not self.is_ghost)):
+            arcade.set_background_color(arcade.color.DARK_RED)
             return MoveResult.STOP
-        else:
-            return super().GetMoveResult(cell_type)
+
+        for sprite in sprites_in_cell:
+            if isinstance(sprite, (Projectile, Monster)):
+                self.GetHurt()
+            elif isinstance(sprite, Sock):
+                self.board.removeSprite( sprite )
+                self.health += 1
+            elif isinstance(sprite, Shoe):
+                self.board.removeSprite( sprite )
+                self.ghost( True )
+        return MoveResult.MOVE
+
+    def GetHurt(self):
+        self.health -= 1
+        if self.health == 0:
+            print( 'I DIE' )
+
     def shoot(self):
         """Shooting method"""
         arrow = Arrow(self.board, self.row, self.col, self.last_direction)
         return arrow
-
 
     def ghost(self, is_ghost):
         self.is_ghost = is_ghost
@@ -234,6 +200,19 @@ class Monster(Sprite):
                 return Direction.DOWN
             else:
                 return Direction.UP
+
+    def GetMoveResult(self, cell_type, sprites_in_cell):
+        result = super().GetMoveResult( cell_type, sprites_in_cell )
+        if result != MoveResult.STOP:
+            for sprite in sprites_in_cell:
+                if isinstance(sprite, Projectile):
+                    self.board.removeSprite( sprite )
+                    return MoveResult.DELETE
+                if isinstance(sprite, Hero):
+                    sprite.GetHurt()
+        return result
+
+
 class Projectile(Sprite):
     """Sprite class for all Projectiles"""
 
@@ -245,6 +224,20 @@ class Projectile(Sprite):
         self.set_texture(0)
     def GetMoveDirection(self):
         return self.direction
+
+    def GetMoveResult(self, cell_type, sprites_in_cell):
+        result = super().GetMoveResult( cell_type, sprites_in_cell )
+        if result == MoveResult.STOP:
+            return MoveResult.STOP
+        for sprite in sprites_in_cell:
+            if isinstance(sprite, (Projectile, Monster)):
+                self.board.removeSprite( sprite )
+                return MoveResult.DELETE
+            if isinstance(sprite, Hero):
+                sprite.GetHurt()
+                return MoveResult.DELETE
+        return MoveResult.MOVE
+
 class Arrow(Projectile):
     """Sprite class for arrows"""
     def __init__(self, board, row, col, direction):
@@ -257,6 +250,8 @@ class Item(Sprite):
         super().__init__(board, row, col)
         self.textures.append(arcade.load_texture(filename, scale=scale))
         self.set_texture(0)
+    def GetMoveDirection(self):
+        return None
 
 class Shoe(Item):
     """Sprite class for Invisibility shoe"""
@@ -311,14 +306,20 @@ class GameBoard():
                 elif cell_code == "H":
                     self.rows[row][col] = CellType.SOCK
 
-    def remove(self, row, col):
+    def removeAll(self, row, col):
         """Deletes the monster at row,col."""
-        self.rows[row][col] = CellType.EMPTY
-        for i in range(len(self.mon_list)):
-            monster = self.mon_list[i]
-            if monster.row == row and monster.row == col:
-                del self.mon_list[i]
-                return
+        for sprite in self.getSprites(row, col):
+            self.sprites.remove( sprite )
+
+    def removeSprite(self, sprite):
+        self.sprites.remove( sprite )
+
+    def getSprites(self, row, col):
+        found = []
+        for sprite in self.sprites:
+            if sprite.row == row and sprite.col == col:
+                found.append( sprite )
+        return found
 
     def getCellType(self, row, col):
         return self.rows[row][col]
@@ -339,20 +340,19 @@ class GameBoard():
                     arcade.draw_rectangle_filled(center_x, center_y,
                         CELL_SIZE, CELL_SIZE, arcade.color.BLACK)
 
-    def set_up(self, hero):
-        self.mon_list = []
+    def set_up(self, hero, sprites):
+        self.sprites = sprites
         for row in range(self.num_rows):
             for col in range(self.num_cols):
                 cell_type = self.getCellType(row, col)
                 if cell_type == CellType.DRAGON:
-                    self.mon_list.append(Dragon(self, row, col, hero))
+                    self.sprites.append(Dragon(self, row, col, hero))
                 elif cell_type == CellType.NINJA:
-                    self.mon_list.append(Ninja(self, row, col, hero))
+                    self.sprites.append(Ninja(self, row, col, hero))
                 elif cell_type == CellType.SOCK:
-                    self.mon_list.append(Sock(self, row, col))
+                    self.sprites.append(Sock(self, row, col))
                 elif cell_type == CellType.SHOE:
-                    self.mon_list.append(Shoe(self, row, col))
-        return self.mon_list
+                    self.sprites.append(Shoe(self, row, col))
 
 class CellType(Enum):
     EMPTY = 1
@@ -396,10 +396,7 @@ class MonsterGame(arcade.Window):
         self.sprites = arcade.SpriteList()
         self.hero = Hero(self.board)
         self.sprites.append(self.hero)
-        self.monsters = self.board.set_up(self.hero)
-        for monster in self.monsters:
-            self.sprites.append(monster)
-
+        self.board.set_up(self.hero, self.sprites)
 
     def quit(self):
         """ Exit the game """
@@ -411,6 +408,8 @@ class MonsterGame(arcade.Window):
         arcade.start_render()
         arcade.set_background_color(arcade.color.AMAZON)
         self.board.draw()
+        if self.hero.health <= 0:
+            arcade.set_background_color(arcade.color.RED)
         self.hero.draw_inventory()
         self.sprites.draw()
         arcade.draw_text('Monsters', 410, 612, color=arcade.color.RED, font_size=24)
@@ -418,9 +417,11 @@ class MonsterGame(arcade.Window):
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
         # self.sprite.angle += self.angle_delta
+        if self.hero.health <= 0:
+            return
         self.hero.update()
         self.frame_update += 1
-        if self.frame_update % 60 == 0:
+        if self.frame_update % 30 == 0:
             for sprite in self.sprites:
                 sprite.MoveOneSpace()
 
@@ -435,11 +436,11 @@ class MonsterGame(arcade.Window):
 
         if key == arcade.key.Q:
             self.quit()
-        elif key == arcade.key.G:
-            if self.hero.is_ghost:
-                self.hero.ghost(False)
-            else:
-                self.hero.ghost(True)
+        # elif key == arcade.key.G:
+        #     if self.hero.is_ghost:
+        #         self.hero.ghost(False)
+        #     else:
+        #         self.hero.ghost(True)
         elif key in KEYS_TO_DIRECTIONS:
             self.hero.SetMoveDirection(KEYS_TO_DIRECTIONS[key])
         elif key == arcade.key.SPACE:
