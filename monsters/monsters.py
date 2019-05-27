@@ -40,21 +40,21 @@ Boards = [
 'B W     W  H       WWW     D B',
 'B W    WWW           WW      B',
 'B      W                     B',
-'B                            B',
+'B    D                       B',
 'B WWW      WWW    W     WW   B',
 'B   I         WW    WW       B',
 'B                            B',
 'B       WWW         W      WWB',
 'B         WW        WW       B',
 'B WWW                        B',
-'B  W                       N B',
+'B  W                     D   B',
 'B     WW         WW          B',
-'B                E           B',
+'B                D           B',
 'B                            B',
 'B         WW         WW    W B',
 'B WW         WWW           W B',
-'BWW                        W B',
-'B        WW        WW        B',
+'BWW    D                   W B',
+'B        WW        WW   E    B',
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
 ]
 ]
@@ -368,6 +368,7 @@ class GameBoard():
         self.num_rows = WINDOW_ROWS
         self.rows = []
         self.finished = False
+        self.board_number = board_number
         for row in range(self.num_rows):
             self.rows.append([CellType.EMPTY] * self.num_cols)
             for col in range(self.num_cols):
@@ -496,8 +497,9 @@ class MonsterGame(arcade.Window):
 
         elif self.board.finished == True:
             arcade.set_background_color((145, 191, 179))
-            arcade.draw_text('Success! You Finished Level' + map_number + 'In '+ str(int(self.board.end_time - self.start_time)) +
-            ' Seconds.', 260, 612, color=arcade.color.BUD_GREEN, font_size=24)
+            arcade.draw_text(f'Success! You Finished Level {self.board.board_number} '
+                f'In {self.board.end_time - self.start_time:.1f} Seconds',
+                260, 612, color=arcade.color.BUD_GREEN, font_size=24)
         else:
             arcade.draw_text('Monsters', 410, 612, color=arcade.color.BUD_GREEN, font_size=24)
         self.hero.draw_inventory()
@@ -544,8 +546,10 @@ class MonsterGame(arcade.Window):
             self.hero.KnockArrow()
         elif key == arcade.key.ESCAPE:
             self.paused = not self.paused
-        # elif key == arcade.key.NUM_1:
-
+        elif key == arcade.key.KEY_1:
+            self.setup(0)
+        elif key == arcade.key.KEY_2:
+            self.setup(1)
 
     def on_key_release(self, key, modifiers):
         pass
