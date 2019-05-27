@@ -500,14 +500,9 @@ class MonsterGame(arcade.Window):
             arcade.draw_text('PAUSED', 270, 300, color=arcade.color.WHITE, font_size=100)
         elif self.board.finished == True:
             arcade.set_background_color((145, 191, 179))
-<<<<<<< HEAD
-            arcade.draw_text('Success! You Finished Level' + self.board_number + 'In '+ str(int(self.board.end_time - self.start_time)) +
-            ' Seconds.', 260, 612, color=arcade.color.BUD_GREEN, font_size=24)
-=======
             arcade.draw_text(f'Success! You Finished Level {self.board.board_number} '
                 f'In {self.board.end_time - self.start_time:.1f} Seconds',
                 260, 612, color=arcade.color.BUD_GREEN, font_size=24)
->>>>>>> 6687d92b1db73526ac3fc00e15c7c36bf826a788
         else:
             arcade.draw_text('Monsters', 410, 612, color=arcade.color.BUD_GREEN, font_size=24)
         self.hero.draw_inventory()
@@ -515,10 +510,12 @@ class MonsterGame(arcade.Window):
         arcade.draw_text('Press 1-9 For Different levels Or q To Quit', 2, 612, color=arcade.color.WHITE, font_size=10)
         arcade.draw_text('Use Arrow Keys To Move And Space To Shoot', 2, 625, color=arcade.color.WHITE, font_size=10)
         arcade.draw_text('Press ESC To Pause', 820, 615, color=arcade.color.WHITE, font_size=10)
-        arcade.draw_text('Level'+ self.board_number, 410, 20, color=arcade.color.WHITE, font_size=10)
-
-
-
+        arcade.draw_text('Level'+ str(self.board.board_number), 410, 20, color=arcade.color.WHITE, font_size=10)
+        seconds = SECONDS_BEFORE_STARTING + 1 - (time.time() - self.start_time)
+        if seconds >= 1:
+            arcade.draw_text(str(int(seconds)), 270, 300, color=arcade.color.WHITE, font_size=100)
+        elif seconds > 0:
+            arcade.draw_text('Go!', 270, 300, color=arcade.color.WHITE, font_size=100)
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
         if (self.hero.health <= 0 or self.board.finished or self.paused == True or
