@@ -513,9 +513,9 @@ class MonsterGame(arcade.Window):
         arcade.draw_text('Level'+ str(self.board.board_number), 410, 20, color=arcade.color.WHITE, font_size=10)
         seconds = SECONDS_BEFORE_STARTING + 1 - (time.time() - self.start_time)
         if seconds >= 1:
-            arcade.draw_text(str(int(seconds)), 270, 300, color=arcade.color.WHITE, font_size=100)
+            arcade.draw_text(str(int(seconds)), 450, 300, color=arcade.color.WHITE, font_size=100)
         elif seconds > 0:
-            arcade.draw_text('Go!', 270, 300, color=arcade.color.WHITE, font_size=100)
+            arcade.draw_text('Go!', 400, 300, color=arcade.color.WHITE, font_size=100)
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
         if (self.hero.health <= 0 or self.board.finished or self.paused == True or
