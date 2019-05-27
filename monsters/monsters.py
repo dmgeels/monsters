@@ -42,7 +42,7 @@ Boards = [
 'B W    WWW           WW      B',
 'B      W                     B',
 'B    D                       B',
-'B WWW      WWW    W     WW   B',
+'B WWW      NNN    W     WW   B',
 'B   I         WW    WW       B',
 'B                            B',
 'B       WWW         W      WWB',
@@ -510,7 +510,7 @@ class MonsterGame(arcade.Window):
         arcade.draw_text('Press 1-9 For Different levels Or q To Quit', 2, 612, color=arcade.color.WHITE, font_size=10)
         arcade.draw_text('Use Arrow Keys To Move And Space To Shoot', 2, 625, color=arcade.color.WHITE, font_size=10)
         arcade.draw_text('Press ESC To Pause', 820, 615, color=arcade.color.WHITE, font_size=10)
-        arcade.draw_text('Level'+ str(self.board.board_number), 410, 20, color=arcade.color.WHITE, font_size=10)
+        arcade.draw_text('Level '+ str(self.board.board_number + 1) , 430, 10, color=arcade.color.WHITE, font_size=18)
         seconds = SECONDS_BEFORE_STARTING + 1 - (time.time() - self.start_time)
         if seconds >= 1:
             arcade.draw_text(str(int(seconds)), 450, 300, color=arcade.color.WHITE, font_size=100)
