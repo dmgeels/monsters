@@ -493,7 +493,9 @@ class MonsterGame(arcade.Window):
         self.board.draw()
         if self.hero.health <= 0:
             arcade.set_background_color(arcade.color.RED)
-
+        elif self.paused == True:
+            arcade.set_background_color((105, 105, 105))
+            arcade.draw_text('PAUSED', 270, 300, color=arcade.color.WHITE, font_size=100)
         elif self.board.finished == True:
             arcade.set_background_color((145, 191, 179))
             arcade.draw_text('Success! You Finished Level' + map_number + 'In '+ str(int(self.board.end_time - self.start_time)) +
@@ -504,6 +506,7 @@ class MonsterGame(arcade.Window):
         self.sprites.draw()
         arcade.draw_text('Press 1-9 For Different levels Or q To Quit', 2, 612, color=arcade.color.WHITE, font_size=10)
         arcade.draw_text('Use Arrow Keys To Move And Space To Shoot', 2, 625, color=arcade.color.WHITE, font_size=10)
+        arcade.draw_text('Press ESC To Pause', 820, 615, color=arcade.color.WHITE, font_size=10)
 
 
 
