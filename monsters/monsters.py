@@ -75,6 +75,10 @@ class Sprite(arcade.Sprite):
         else:
             return MoveResult.MOVE
 
+    def GetSpeed(self):
+        """Returns speed on a scale from 1-6 steps/second."""
+        return 1;
+
     def MoveOneSpace(self):
         """Moves the sprite one space."""
         direction = self.GetMoveDirection()
@@ -141,6 +145,9 @@ class Hero(Sprite):
         direction = self.next_direction
         self.next_direction = None
         return direction
+
+    def GetSpeed(self):
+        return 3; # medium speed
 
     def GetMoveResult(self, cell_type, sprites_in_cell):
         """Each type of sprite should define this method. Default is silly."""
@@ -227,10 +234,13 @@ class Projectile(Sprite):
     def GetMoveDirection(self):
         return self.direction
 
+    def GetSpeed(self):
+        return 6;
+
     def GetMoveResult(self, cell_type, sprites_in_cell):
         result = super().GetMoveResult( cell_type, sprites_in_cell )
         if result == MoveResult.STOP:
-            return MoveResult.STOP
+            return MoveResult.DELETE
         for sprite in sprites_in_cell:
             if isinstance(sprite, (Projectile, Monster)):
                 self.board.removeSprite( sprite )
@@ -243,7 +253,7 @@ class Projectile(Sprite):
 class Arrow(Projectile):
     """Sprite class for arrows"""
     def __init__(self, board, row, col, direction):
-        super().__init__(board, row, col, "img/arrow.png", 2, direction)
+        super().__init__(board, row, col, "img/arrow.png", 1, direction)
 
 class Fire(Projectile):
     """Sprite class for fire"""
@@ -288,11 +298,17 @@ class Dragon(Monster):
     def __init__(self, board, row, col, hero):
         super().__init__(board, row, col, 'img/dragon.png', 1, hero)
 
+    def GetSpeed(self):
+        return 2; # slower than Hero
+
 class Ninja(Monster):
     """Sprite class for Ninja"""
 
     def __init__(self, board, row, col, hero):
         super().__init__(board, row, col, 'img/ninja.png', 1.15, hero)
+
+    def GetSpeed(self):
+        return 3; # same as Hero
 
 
 class GameBoard():
@@ -422,8 +438,6 @@ class MonsterGame(arcade.Window):
         """ Exit the game """
         arcade.close_window()
 
-
-
     def on_draw(self):
         arcade.start_render()
         arcade.set_background_color(arcade.color.CITRON)
@@ -443,9 +457,12 @@ class MonsterGame(arcade.Window):
             return
         self.hero.update()
         self.frame_update += 1
-        if self.frame_update % 30 == 0:
-            for sprite in self.sprites:
+        for sprite in self.sprites:
+            frames_between_moves = 60 / sprite.GetSpeed()
+            if self.frame_update % frames_between_moves == 0:
                 sprite.MoveOneSpace()
+        if self.frame_update % 6000 == 0:
+            self.frame_update = 0 # reset to avoid overflow
 
     def on_key_press(self, key, modifiers):
         """ Handles keyboard. Quits on 'q'. """
