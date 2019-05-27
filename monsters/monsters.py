@@ -492,14 +492,17 @@ class MonsterGame(arcade.Window):
         self.board.draw()
         if self.hero.health <= 0:
             arcade.set_background_color(arcade.color.RED)
+
         elif self.board.finished == True:
             arcade.set_background_color((145, 191, 179))
-            arcade.draw_text('Success! You Finished In '+ str(int(self.board.end_time - self.start_time)) +
+            arcade.draw_text('Success! You Finished Level' + map_number + 'In '+ str(int(self.board.end_time - self.start_time)) +
             ' Seconds.', 260, 612, color=arcade.color.BUD_GREEN, font_size=24)
         else:
             arcade.draw_text('Monsters', 410, 612, color=arcade.color.BUD_GREEN, font_size=24)
         self.hero.draw_inventory()
         self.sprites.draw()
+        arcade.draw_text('Press 1-9 For Different levels Or q To Quit', 2, 612, color=arcade.color.WHITE, font_size=10)
+        arcade.draw_text('Use Arrow Keys To Move And Space To Shoot', 2, 625, color=arcade.color.WHITE, font_size=10)
 
 
 
@@ -533,15 +536,12 @@ class MonsterGame(arcade.Window):
 
         if key == arcade.key.Q:
             self.quit()
-        # elif key == arcade.key.G:
-        #     if self.hero.is_ghost:
-        #         self.hero.ghost(False)
-        #     else:
-        #         self.hero.ghost(True)
+
         elif key in KEYS_TO_DIRECTIONS:
             self.hero.SetMoveDirection(KEYS_TO_DIRECTIONS[key])
         elif key == arcade.key.SPACE:
             self.hero.KnockArrow()
+        # elif key == arcade.key.NUM_1:
 
 
     def on_key_release(self, key, modifiers):
