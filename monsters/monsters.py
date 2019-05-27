@@ -3,6 +3,7 @@ import arcade
 import random
 from enum import Enum
 from collections import Counter
+import time
 
 CELL_SIZE = 32
 WINDOW_COLS = 30
@@ -25,11 +26,11 @@ Boards = [
 'B WWW                        B',
 'B  W                       N B',
 'B     WW         WW          B',
-'B                            B',
+'B                E           B',
 'B                            B',
 'B         WW         WW    W B',
 'B WW         WWW           W B',
-'BWW                      E W B',
+'BWW                        W B',
 'B        WW        WW        B',
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
 ]
@@ -167,6 +168,7 @@ class Hero(Sprite):
                 self.ghost( True )
             elif isinstance(sprite, Door):
                 self.board.finished = True
+                self.board.end_time = time.time()
         return MoveResult.MOVE
 
     def GetHurt(self):
@@ -421,6 +423,7 @@ class MonsterGame(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height, title='monsters')
 
+        self.start_time = time.time()
         self.angle_delta = 1
         self.show_points = False
         self.frame_update = 0
@@ -446,9 +449,14 @@ class MonsterGame(arcade.Window):
             arcade.set_background_color(arcade.color.RED)
         elif self.board.finished == True:
             arcade.set_background_color((145, 191, 179))
+            arcade.draw_text('Success! You Finished In '+ str(int(self.board.end_time - self.start_time)) +
+            ' Seconds.', 260, 612, color=arcade.color.BUD_GREEN, font_size=24)
+        else:
+            arcade.draw_text('Monsters', 410, 612, color=arcade.color.BUD_GREEN, font_size=24)
         self.hero.draw_inventory()
         self.sprites.draw()
-        arcade.draw_text('Monsters', 410, 612, color=arcade.color.BUD_GREEN, font_size=24)
+
+
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
