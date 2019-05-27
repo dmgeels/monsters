@@ -544,6 +544,8 @@ class MonsterGame(arcade.Window):
 
         if key == arcade.key.Q:
             self.quit()
+        elif self.paused:
+            self.paused = False
         elif self.board.finished:
             next_board = self.board.board_number + 1
             if next_board < len(Boards):
@@ -553,7 +555,7 @@ class MonsterGame(arcade.Window):
         elif key == arcade.key.SPACE:
             self.hero.KnockArrow()
         elif key == arcade.key.ESCAPE:
-            self.paused = not self.paused
+            self.paused = True
         elif key == arcade.key.KEY_1:
             self.setup(0)
         elif key == arcade.key.KEY_2:
