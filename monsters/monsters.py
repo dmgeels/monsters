@@ -440,15 +440,15 @@ class MonsterGame(arcade.Window):
 
     def on_draw(self):
         arcade.start_render()
-        arcade.set_background_color(arcade.color.CITRON)
+        arcade.set_background_color(arcade.color.BUD_GREEN)
         self.board.draw()
         if self.hero.health <= 0:
             arcade.set_background_color(arcade.color.RED)
         elif self.board.finished == True:
-            arcade.set_background_color(arcade.color.BUD_GREEN)
+            arcade.set_background_color((145, 191, 179))
         self.hero.draw_inventory()
         self.sprites.draw()
-        arcade.draw_text('Monsters', 410, 612, color=arcade.color.RED, font_size=24)
+        arcade.draw_text('Monsters', 410, 612, color=arcade.color.BUD_GREEN, font_size=24)
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
