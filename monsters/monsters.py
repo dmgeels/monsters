@@ -238,7 +238,7 @@ class Projectile(Sprite):
     def GetMoveResult(self, cell_type, sprites_in_cell):
         result = super().GetMoveResult( cell_type, sprites_in_cell )
         if result == MoveResult.STOP:
-            return MoveResult.STOP
+            return MoveResult.DELETE
         for sprite in sprites_in_cell:
             if isinstance(sprite, (Projectile, Monster)):
                 self.board.removeSprite( sprite )
@@ -251,7 +251,7 @@ class Projectile(Sprite):
 class Arrow(Projectile):
     """Sprite class for arrows"""
     def __init__(self, board, row, col, direction):
-        super().__init__(board, row, col, "img/arrow.png", 2, direction)
+        super().__init__(board, row, col, "img/arrow.png", 1, direction)
 
 class Item(Sprite):
     """Sprite class for all items"""
