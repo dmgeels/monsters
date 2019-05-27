@@ -481,6 +481,7 @@ class MonsterGame(arcade.Window):
         self.hero = Hero(self.board)
         self.sprites.append(self.hero)
         self.board.set_up(self.hero, self.sprites)
+        self.paused = False
 
     def quit(self):
         """ Exit the game """
@@ -508,7 +509,7 @@ class MonsterGame(arcade.Window):
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
-        if self.hero.health <= 0 or self.board.finished == True:
+        if self.hero.health <= 0 or self.board.finished or self.paused == True:
             return
         self.frame_update += 1
         projectiles = [ x for x in self.sprites if isinstance(x, Projectile) ]
@@ -541,6 +542,8 @@ class MonsterGame(arcade.Window):
             self.hero.SetMoveDirection(KEYS_TO_DIRECTIONS[key])
         elif key == arcade.key.SPACE:
             self.hero.KnockArrow()
+        elif key == arcade.key.ESCAPE:
+            self.paused = not self.paused
         # elif key == arcade.key.NUM_1:
 
 
