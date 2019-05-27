@@ -470,14 +470,12 @@ class MonsterGame(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height, title='monsters')
 
+    def setup(self, board_number):
+        """ Start-of-level setup """
         self.start_time = time.time()
-        self.angle_delta = 1
-        self.show_points = False
         self.frame_update = 0
 
-    def setup(self):
-        """ One-time setup """
-        self.board = GameBoard(0)
+        self.board = GameBoard(board_number)
 
         self.sprites = arcade.SpriteList()
         self.hero = Hero(self.board)
@@ -507,7 +505,6 @@ class MonsterGame(arcade.Window):
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
-        # self.sprite.angle += self.angle_delta
         if self.hero.health <= 0 or self.board.finished == True:
             return
         self.frame_update += 1
@@ -555,7 +552,7 @@ class MonsterGame(arcade.Window):
 def main():
     print('Starting up, directory "${0}"'.format(os.getcwd()))
     game = MonsterGame(SCREEN_WIDTH, SCREEN_HEIGHT)
-    game.setup()
+    game.setup(0)
     arcade.run()
 
 
