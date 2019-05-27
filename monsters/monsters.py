@@ -30,7 +30,7 @@ Boards = [
 'B                            B',
 'B         WW         WW    W B',
 'B WW         WWW           W B',
-'BWW                        W B',
+'BWW                      E W B',
 'B        WW        WW        B',
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
 ]
@@ -166,6 +166,8 @@ class Hero(Sprite):
             elif isinstance(sprite, Shoe):
                 self.board.removeSprite( sprite )
                 self.ghost( True )
+            elif isinstance(sprite, Door):
+                self.board.finished = True
         return MoveResult.MOVE
 
     def GetHurt(self):
@@ -257,6 +259,11 @@ class Arrow(Projectile):
     def __init__(self, board, row, col, direction):
         super().__init__(board, row, col, "img/arrow.png", 1, direction)
 
+class Fire(Projectile):
+    """Sprite class for fire"""
+    def __init__(self, board, row, col, direction):
+        super().__init__(board, row, col, "img/fire ball.png", 2, direction)
+
 class Item(Sprite):
     """Sprite class for all items"""
 
@@ -283,6 +290,12 @@ class Heart(Item):
     def __init__(self, board, row, col):
         super().__init__(board, row, col, 'img/Heart.png', 1)
 
+class Door(Item):
+    """Sprite class for "Door" """
+    def __init__(self, board, row, col):
+        super().__init__(board, row, col, 'img/door.png', 2)
+        self.center_x += 5
+
 class Dragon(Monster):
     """Sprite class for Dragon"""
 
@@ -296,7 +309,7 @@ class Ninja(Monster):
     """Sprite class for Ninja"""
 
     def __init__(self, board, row, col, hero):
-        super().__init__(board, row, col, 'img/ninja.png', 1, hero)
+        super().__init__(board, row, col, 'img/ninja.png', 1.15, hero)
 
     def GetSpeed(self):
         return 3; # same as Hero
@@ -309,6 +322,7 @@ class GameBoard():
         self.num_cols = WINDOW_COLS
         self.num_rows = WINDOW_ROWS
         self.rows = []
+        self.finished = False
         for row in range(self.num_rows):
             self.rows.append([CellType.EMPTY] * self.num_cols)
             for col in range(self.num_cols):
@@ -325,6 +339,9 @@ class GameBoard():
                     self.rows[row][col] = CellType.SHOE
                 elif cell_code == "H":
                     self.rows[row][col] = CellType.SOCK
+                elif cell_code == "E":
+                    self.rows[row][col] = CellType.DOOR
+
 
     def removeAll(self, row, col):
         """Deletes the monster at row,col."""
@@ -373,6 +390,8 @@ class GameBoard():
                     self.sprites.append(Sock(self, row, col))
                 elif cell_type == CellType.SHOE:
                     self.sprites.append(Shoe(self, row, col))
+                elif cell_type == CellType.DOOR:
+                    self.sprites.append(Door(self, row, col))
 
 class CellType(Enum):
     EMPTY = 1
@@ -382,6 +401,7 @@ class CellType(Enum):
     DRAGON = 5
     SHOE = 6
     SOCK = 7
+    DOOR = 8
 
 class Direction(Enum):
     UP = (1, 0, 90)
@@ -424,18 +444,20 @@ class MonsterGame(arcade.Window):
 
     def on_draw(self):
         arcade.start_render()
-        arcade.set_background_color(arcade.color.AMAZON)
+        arcade.set_background_color(arcade.color.BUD_GREEN)
         self.board.draw()
         if self.hero.health <= 0:
             arcade.set_background_color(arcade.color.RED)
+        elif self.board.finished == True:
+            arcade.set_background_color((145, 191, 179))
         self.hero.draw_inventory()
         self.sprites.draw()
-        arcade.draw_text('Monsters', 410, 612, color=arcade.color.RED, font_size=24)
+        arcade.draw_text('Monsters', 410, 612, color=arcade.color.BUD_GREEN, font_size=24)
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
         # self.sprite.angle += self.angle_delta
-        if self.hero.health <= 0:
+        if self.hero.health <= 0 or self.board.finished == True:
             return
         self.hero.update()
         self.frame_update += 1
