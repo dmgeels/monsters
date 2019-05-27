@@ -33,9 +33,30 @@ Boards = [
 'BWW                        W B',
 'B        WW        WW        B',
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+],
+[
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+'B W     W  H       WWW     D B',
+'B W    WWW           WW      B',
+'B      W                     B',
+'B                            B',
+'B WWW      WWW    W     WW   B',
+'B   I         WW    WW       B',
+'B                            B',
+'B       WWW         W      WWB',
+'B         WW        WW       B',
+'B WWW                        B',
+'B  W                       N B',
+'B     WW         WW          B',
+'B                E           B',
+'B                            B',
+'B         WW         WW    W B',
+'B WW         WWW           W B',
+'BWW                        W B',
+'B        WW        WW        B',
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
 ]
 ]
-
 
 
 TEXTURE_LEFT = 0
