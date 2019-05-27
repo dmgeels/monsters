@@ -11,6 +11,7 @@ WINDOW_COLS = 30
 WINDOW_ROWS = 20
 SCREEN_WIDTH = CELL_SIZE * WINDOW_COLS
 SCREEN_HEIGHT = CELL_SIZE * WINDOW_ROWS
+SECONDS_BEFORE_STARTING = 3
 
 Boards = [
 [
@@ -511,7 +512,8 @@ class MonsterGame(arcade.Window):
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
-        if self.hero.health <= 0 or self.board.finished or self.paused == True:
+        if (self.hero.health <= 0 or self.board.finished or self.paused == True or
+            time.time() - self.start_time < SECONDS_BEFORE_STARTING):
             return
         self.frame_update += 1
         projectiles = [ x for x in self.sprites if isinstance(x, Projectile) ]
@@ -539,7 +541,10 @@ class MonsterGame(arcade.Window):
 
         if key == arcade.key.Q:
             self.quit()
-
+        elif self.board.finished:
+            next_board = self.board.board_number + 1
+            if next_board < len(Boards):
+                self.setup(next_board)
         elif key in KEYS_TO_DIRECTIONS:
             self.hero.SetMoveDirection(KEYS_TO_DIRECTIONS[key])
         elif key == arcade.key.SPACE:
