@@ -1,4 +1,5 @@
 import os
+import math
 import arcade
 import random
 from enum import Enum
@@ -53,7 +54,7 @@ class Sprite(arcade.Sprite):
         self.angle = 0
         self.frame_update = 0
         self.texture_index = 0
-        classname = str(self.__class__)
+        classname = str(self.__class__).split('.')[1][0:-2]
         self.debug_name = f'{classname}-{Sprite.instance_count_by_class[classname]}';
 
     def update(self):
@@ -197,7 +198,10 @@ class Monster(Sprite):
         """Always move closer to the hero."""
         hero_row_distance = self.hero.row - self.row
         hero_col_distance = self.hero.col - self.col
-        if abs(hero_col_distance) > abs(hero_row_distance):
+        if random.random() < 0.1: # 10% of the time do something random
+            return random.choice(list(Direction))
+        angle_in_radians = math.atan2(abs(hero_row_distance), abs(hero_col_distance))
+        if random.random() * math.pi/2 > angle_in_radians:
             if hero_col_distance > 0:
                 return Direction.RIGHT
             else:
