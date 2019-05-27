@@ -55,6 +55,7 @@ class Sprite(arcade.Sprite):
         self.frame_update = 0
         self.texture_index = 0
         classname = str(self.__class__).split('.')[1][0:-2]
+        Sprite.instance_count_by_class[classname] += 1
         self.debug_name = f'{classname}-{Sprite.instance_count_by_class[classname]}';
 
     def update(self):
@@ -127,7 +128,17 @@ class Hero(Sprite):
         self.set_texture(2)
         self.is_ghost = False
         self.has_shoe = False
+        self.last_direction = Direction.RIGHT
         self.next_direction = None
+        self.shoot_direction = None
+
+    def update(self):
+        super().update()
+        if self.frame_update % 30 == 29: # twice a second, before moving
+            if self.shoot_direction:
+                arrow = Arrow(self.board, self.row, self.col, self.shoot_direction)
+                self.shoot_direction = None
+                return arrow
 
     def draw_inventory(self):
         shoe = Shoe(self.board, 15, 0)
@@ -175,10 +186,9 @@ class Hero(Sprite):
         if self.health == 0:
             print( 'I DIE' )
 
-    def shoot(self):
+    def KnockArrow(self):
         """Shooting method"""
-        arrow = Arrow(self.board, self.row, self.col, self.last_direction)
-        return arrow
+        self.shoot_direction = self.last_direction
 
     def ghost(self, is_ghost):
         self.is_ghost = is_ghost
@@ -304,6 +314,18 @@ class Dragon(Monster):
 
     def GetSpeed(self):
         return 2; # slower than Hero
+
+    def update(self):
+        super().update()
+        shoot_direction = None
+        if self.frame_update % 30 == 29: # twice a second, before moving
+            if self.hero.row == self.row: # on a row with the Hero
+                shoot_direction = Direction.LEFT if self.col > self.hero.col else Direction.RIGHT
+            elif self.hero.col == self.col: # on a column
+                shoot_direction = Direction.DOWN if self.row > self.hero.row else Direction.UP
+        if shoot_direction:
+            return Fire( self.board, self.row, self.col, shoot_direction )
+
 
 class Ninja(Monster):
     """Sprite class for Ninja"""
@@ -459,9 +481,15 @@ class MonsterGame(arcade.Window):
         # self.sprite.angle += self.angle_delta
         if self.hero.health <= 0 or self.board.finished == True:
             return
-        self.hero.update()
         self.frame_update += 1
-        for sprite in self.sprites:
+        projectiles = [ x for x in self.sprites if isinstance(x, Projectile) ]
+        others = [ x for x in self.sprites if not isinstance(x, Projectile) ]
+        all_sprites = projectiles + others
+        for sprite in all_sprites:
+            projectile = sprite.update()
+            if projectile:
+                self.sprites.append(projectile)
+                projectile.MoveOneSpace()
             frames_between_moves = 60 / sprite.GetSpeed()
             if self.frame_update % frames_between_moves == 0:
                 sprite.MoveOneSpace()
@@ -487,7 +515,7 @@ class MonsterGame(arcade.Window):
         elif key in KEYS_TO_DIRECTIONS:
             self.hero.SetMoveDirection(KEYS_TO_DIRECTIONS[key])
         elif key == arcade.key.SPACE:
-            self.sprites.append(self.hero.shoot())
+            self.hero.KnockArrow()
 
 
     def on_key_release(self, key, modifiers):
