@@ -11,6 +11,7 @@ WINDOW_COLS = 30
 WINDOW_ROWS = 20
 SCREEN_WIDTH = CELL_SIZE * WINDOW_COLS
 SCREEN_HEIGHT = CELL_SIZE * WINDOW_ROWS
+SECONDS_BEFORE_STARTING = 3
 
 Boards = [
 [
@@ -40,21 +41,21 @@ Boards = [
 'B W     W  H       WWW     D B',
 'B W    WWW           WW      B',
 'B      W                     B',
-'B                            B',
+'B    D                       B',
 'B WWW      WWW    W     WW   B',
 'B   I         WW    WW       B',
 'B                            B',
 'B       WWW         W      WWB',
 'B         WW        WW       B',
 'B WWW                        B',
-'B  W                       N B',
+'B  W                     D   B',
 'B     WW         WW          B',
-'B                E           B',
+'B                D           B',
 'B                            B',
 'B         WW         WW    W B',
 'B WW         WWW           W B',
-'BWW                        W B',
-'B        WW        WW        B',
+'BWW    D                   W B',
+'B        WW        WW   E    B',
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
 ]
 ]
@@ -368,6 +369,7 @@ class GameBoard():
         self.num_rows = WINDOW_ROWS
         self.rows = []
         self.finished = False
+        self.board_number = board_number
         for row in range(self.num_rows):
             self.rows.append([CellType.EMPTY] * self.num_cols)
             for col in range(self.num_cols):
@@ -498,8 +500,14 @@ class MonsterGame(arcade.Window):
             arcade.draw_text('PAUSED', 270, 300, color=arcade.color.WHITE, font_size=100)
         elif self.board.finished == True:
             arcade.set_background_color((145, 191, 179))
+<<<<<<< HEAD
             arcade.draw_text('Success! You Finished Level' + self.board_number + 'In '+ str(int(self.board.end_time - self.start_time)) +
             ' Seconds.', 260, 612, color=arcade.color.BUD_GREEN, font_size=24)
+=======
+            arcade.draw_text(f'Success! You Finished Level {self.board.board_number} '
+                f'In {self.board.end_time - self.start_time:.1f} Seconds',
+                260, 612, color=arcade.color.BUD_GREEN, font_size=24)
+>>>>>>> 6687d92b1db73526ac3fc00e15c7c36bf826a788
         else:
             arcade.draw_text('Monsters', 410, 612, color=arcade.color.BUD_GREEN, font_size=24)
         self.hero.draw_inventory()
@@ -513,7 +521,8 @@ class MonsterGame(arcade.Window):
 
     def update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
-        if self.hero.health <= 0 or self.board.finished or self.paused == True:
+        if (self.hero.health <= 0 or self.board.finished or self.paused == True or
+            time.time() - self.start_time < SECONDS_BEFORE_STARTING):
             return
         self.frame_update += 1
         projectiles = [ x for x in self.sprites if isinstance(x, Projectile) ]
@@ -541,15 +550,20 @@ class MonsterGame(arcade.Window):
 
         if key == arcade.key.Q:
             self.quit()
-
+        elif self.board.finished:
+            next_board = self.board.board_number + 1
+            if next_board < len(Boards):
+                self.setup(next_board)
         elif key in KEYS_TO_DIRECTIONS:
             self.hero.SetMoveDirection(KEYS_TO_DIRECTIONS[key])
         elif key == arcade.key.SPACE:
             self.hero.KnockArrow()
         elif key == arcade.key.ESCAPE:
             self.paused = not self.paused
-        # elif key == arcade.key.NUM_1:
-
+        elif key == arcade.key.KEY_1:
+            self.setup(0)
+        elif key == arcade.key.KEY_2:
+            self.setup(1)
 
     def on_key_release(self, key, modifiers):
         pass
