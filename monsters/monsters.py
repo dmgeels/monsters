@@ -57,6 +57,72 @@ Boards = [
 'BWW    D                   W B',
 'B        WW        WW   E    B',
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+],
+[
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+'B W     W  H   B   WWW     D B',
+'B W    WWW           WW      B',
+'B      W                     B',
+'B    D                       B',
+'B WWW      NNN    W     WW   B',
+'B   I         WW    WW       B',
+'B                            B',
+'B       WWW         W      WWB',
+'B         WW        WW       B',
+'B WWW                        B',
+'B  W                     D   B',
+'B     WW         WW          B',
+'B                D           B',
+'B                            B',
+'B         WW         WW    W B',
+'B WW         WWW           W B',
+'BWW    D                   W B',
+'B        WW        WW   E    B',
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+],
+[
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+'B W     W  H       WWW     D B',
+'B W    WWW           WW      B',
+'B      W                     B',
+'B    D                       B',
+'B WWW      NNN    W     WW   B',
+'B   I         WW    WW       B',
+'B                            B',
+'B       WWW         W      WWB',
+'B         WW        WW       B',
+'B WWW                        B',
+'B  W                     D   B',
+'B     WW         WW          B',
+'B                D           B',
+'B                            B',
+'B         WW         WW    W B',
+'B WW         WWW           W B',
+'BWW    D                   W B',
+'B        WW        WW   E    B',
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+],
+[
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+'B W     W  H       WWW     D B',
+'B W    WWW           WW      B',
+'B      W                     B',
+'B    D                       B',
+'B WWW      NNN    W     WW   B',
+'B   I         WW    WW       B',
+'B                            B',
+'B       WWW         W      WWB',
+'B         WW        WW       B',
+'B WWW                        B',
+'B  W                     D   B',
+'B     WW         WW          B',
+'B                D           B',
+'B                            B',
+'B         WW         WW    W B',
+'B WW         WWW           W B',
+'BWW    D                   W B',
+'B        WW        WW   E    B',
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
 ]
 ]
 
@@ -563,7 +629,12 @@ class MonsterGame(arcade.Window):
             self.setup(0)
         elif key == arcade.key.KEY_2:
             self.setup(1)
-
+        elif key == arcade.key.KEY_3:
+            self.setup(2)
+        elif key == arcade.key.KEY_4:
+            self.setup(3)
+        elif key == arcade.key.KEY_5:
+            self.setup(4)
     def on_key_release(self, key, modifiers):
         pass
 
