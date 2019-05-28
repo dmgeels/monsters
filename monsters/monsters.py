@@ -500,9 +500,9 @@ class MonsterGame(arcade.Window):
             arcade.draw_text('PAUSED', 270, 300, color=arcade.color.WHITE, font_size=100)
         elif self.board.finished == True:
             arcade.set_background_color((145, 191, 179))
-            arcade.draw_text(f'Success! You Finished Level {self.board.board_number} '
+            arcade.draw_text(f'Success! You Finished Level {self.board.board_number + 1} '
                 f'In {self.board.end_time - self.start_time:.1f} Seconds',
-                260, 612, color=arcade.color.BUD_GREEN, font_size=24)
+                150, 400, color=arcade.color.WHITE, font_size=25)
         else:
             arcade.draw_text('Monsters', 410, 612, color=arcade.color.BUD_GREEN, font_size=24)
         self.hero.draw_inventory()
