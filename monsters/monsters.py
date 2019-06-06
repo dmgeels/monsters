@@ -14,21 +14,45 @@ SCREEN_HEIGHT = CELL_SIZE * WINDOW_ROWS
 SECONDS_BEFORE_STARTING = 3
 
 Boards = [
+#1
 [
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
-'B W     W  H       WWW     D B',
+'B       W      D E WWW       B',
 'B W    WWW           WW      B',
 'B      W                     B',
 'B                            B',
 'B WWW      WWW    W     WW   B',
-'B   I         WW    WW       B',
+'B             WW    WW       B',
 'B                            B',
 'B       WWW         W      WWB',
 'B         WW        WW       B',
 'B WWW                        B',
-'B  W                       N B',
+'B  W                         B',
 'B     WW         WW          B',
-'B                E           B',
+'B                            B',
+'B                            B',
+'B         WW         WW      B',
+'B WW         WWW             B',
+'BWW                          B',
+'B        WW        WW        B',
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+],
+#2
+[
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+'B W     W      E   WWW       B',
+'B W    WWW     N     WW      B',
+'B      W                     B',
+'B                            B',
+'B WWW             W     WW   B',
+'B             WW    WW       B',
+'B                            B',
+'B       WWW         W      WWB',
+'B         WW        WW       B',
+'B WWW                        B',
+'B  W                         B',
+'B     WW         WW          B',
+'B                            B',
 'B                            B',
 'B         WW         WW    W B',
 'B WW         WWW           W B',
@@ -36,97 +60,191 @@ Boards = [
 'B        WW        WW        B',
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
 ],
+#3
 [
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
-'B W     W  H       WWW     D B',
-'B W    WWW           WW      B',
-'B      W                     B',
-'B    D                       B',
-'B WWW      NNN    W     WW   B',
-'B   I         WW    WW       B',
-'B                            B',
-'B       WWW         W      WWB',
-'B         WW        WW       B',
-'B WWW                        B',
-'B  W                     D   B',
-'B     WW         WW          B',
-'B                D           B',
-'B                            B',
-'B         WW         WW    W B',
-'B WW         WWW           W B',
-'BWW    D                   W B',
-'B        WW        WW   E    B',
+'B WW  WW  WW  WWE WW  WW  WW B',
+'B D                        D B',
+'B D                        D B',
+'B WW  WW  WW  WW  WW  WW  WW B',
+'B WW  WW  WW  WW  WW  WW  WW B',
+'B D                        D B',
+'B D                        D B',
+'B WW  WW  WW  WW  WW  WW  WW B',
+'B WW  WW  WW  WW  WW  WW  WW B',
+'B D                        D B',
+'B D                        D B',
+'B WW  WW  WW  WW  WW  WW  WW B',
+'B WW  WW  WW  WW  WW  WW  WW B',
+'B D                        D B',
+'B D                        D B',
+'B WW  WW  WW  WW  WW  WW  WW B',
+'B WW  WW  WW  WW  WW  WW  WW B',
+'B D                        D B',
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
 ],
+#4
 [
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
-'B W     W  H   B   WWW     D B',
-'B W    WWW           WW      B',
-'B      W                     B',
-'B    D                       B',
-'B WWW      NNN    W     WW   B',
-'B   I         WW    WW       B',
 'B                            B',
-'B       WWW         W      WWB',
-'B         WW        WW       B',
-'B WWW                        B',
-'B  W                     D   B',
-'B     WW         WW          B',
-'B                D           B',
+'B WWWWWWWWWWWWWWWWWWWWWWWWWWWB',
 'B                            B',
-'B         WW         WW    W B',
-'B WW         WWW           W B',
-'BWW    D                   W B',
-'B        WW        WW   E    B',
+'BWWWWWWWWWWWWWWWWWWWWWWWWWWW B',
+'B                            B',
+'B WWWWWWWWWWWWWWWWWWWWWWWWWWWB',
+'B                            B',
+'BWWWWWWWWWWWWWWWWWWWWWWWWWWW B',
+'B             E              B',
+'B WWWWWWWWWWWWWWWWWWWWWWWWWWWB',
+'B                            B',
+'BWWWWWWWWWWWWWWWWWWWWWWWWWWW B',
+'B                            B',
+'B WWWWWWWWWWWWWWWWWWWWWWWWWWWB',
+'B              N             B',
+'BWWWWWWWWWWWWWWWWWWWWWWWWWWW B',
+'B                            B',
+'B WWWWWWWWWWWWWWWWWWWWWWWWWWWB',
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
 ],
+#5
 [
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
-'B W     W  H       WWW     D B',
-'B W    WWW           WW      B',
-'B      W                     B',
-'B    D                       B',
-'B WWW      NNN    W     WW   B',
-'B   I         WW    WW       B',
 'B                            B',
-'B       WWW         W      WWB',
-'B         WW        WW       B',
-'B WWW                        B',
-'B  W                     D   B',
-'B     WW         WW          B',
-'B                D           B',
 'B                            B',
-'B         WW         WW    W B',
-'B WW         WWW           W B',
-'BWW    D                   W B',
-'B        WW        WW   E    B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
 ],
+#6
 [
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
-'B W     W  H       WWW     D B',
-'B W    WWW           WW      B',
-'B      W                     B',
-'B    D                       B',
-'B WWW      NNN    W     WW   B',
-'B   I         WW    WW       B',
 'B                            B',
-'B       WWW         W      WWB',
-'B         WW        WW       B',
-'B WWW                        B',
-'B  W                     D   B',
-'B     WW         WW          B',
-'B                D           B',
 'B                            B',
-'B         WW         WW    W B',
-'B WW         WWW           W B',
-'BWW    D                   W B',
-'B        WW        WW   E    B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+],
+#7
+[
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+],
+#8
+[
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+],
+#9
+[
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+],
+#10
+[
+'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
+'B                            B',
 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
 ]
 ]
-
-
 TEXTURE_LEFT = 0
 TEXTURE_RIGHT = 1
 
@@ -378,13 +496,13 @@ class Shoe(Item):
     """Sprite class for Invisibility shoe"""
 
     def __init__(self, board, row, col):
-        super().__init__(board, row, col, 'img/Haunted shoe.png', 1)
+        super().__init__(board, row, col, 'img/Haunted shoe.png', .05)
 
 class Sock(Item):
     """Sprite class for Health sock"""
 
     def __init__(self, board, row, col):
-        super().__init__(board, row, col, 'img/health sock.png', 1)
+        super().__init__(board, row, col, 'img/health sock.png', .05)
 class Heart(Item):
     """Sprite class for "Health" """
     def __init__(self, board, row, col):
@@ -400,7 +518,14 @@ class Dragon(Monster):
     """Sprite class for Dragon"""
 
     def __init__(self, board, row, col, hero):
-        super().__init__(board, row, col, 'img/dragon.png', 1, hero)
+        super().__init__(board, row, col, 'img/dragon.png', 0.05, hero)
+        self.textures.extend(arcade.load_textures('img/dragon.png',
+                [
+                    [0, 0, 1, 1],
+                    [0, 0, 1, 1],
+
+                ]
+            ))
 
     def GetSpeed(self):
         return 2; # slower than Hero
@@ -421,8 +546,15 @@ class Ninja(Monster):
     """Sprite class for Ninja"""
 
     def __init__(self, board, row, col, hero):
-        super().__init__(board, row, col, 'img/ninja.png', 1.15, hero)
+        super().__init__(board, row, col, 'img/ninja.png', 0.05, hero)
+        self.textures.extend(arcade.load_textures('img/Ninja.png',
+                [
+                    [0, 0, 1, 1],
+                    [0, 0, 1, 1],
 
+
+                ]
+            ))
     def GetSpeed(self):
         return 3; # same as Hero
 
@@ -561,6 +693,8 @@ class MonsterGame(arcade.Window):
         self.board.draw()
         if self.hero.health <= 0:
             arcade.set_background_color(arcade.color.RED)
+            arcade.draw_text('GAME OVER', 340, 350, color=arcade.color.WHITE, font_size=50)
+            arcade.draw_text('PRESS 1-9 TO RESTART', 130, 300, color=arcade.color.WHITE, font_size=50)
         elif self.paused == True:
             arcade.set_background_color((105, 105, 105))
             arcade.draw_text('PAUSED', 270, 300, color=arcade.color.WHITE, font_size=100)
@@ -635,6 +769,18 @@ class MonsterGame(arcade.Window):
             self.setup(3)
         elif key == arcade.key.KEY_5:
             self.setup(4)
+        elif key == arcade.key.KEY_6:
+            self.setup(5)
+        elif key == arcade.key.KEY_7:
+            self.setup(6)
+        elif key == arcade.key.KEY_8:
+            self.setup(7)
+        elif key == arcade.key.KEY_9:
+            self.setup(8)
+        elif key == arcade.key.KEY_0:
+            self.setup(9)
+        elif key == arcade.key.M:
+            self.setup(10)
     def on_key_release(self, key, modifiers):
         pass
 
